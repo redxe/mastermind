@@ -1,3 +1,4 @@
 # LaTeX build artifacts are isolated by .latexmkrc.
 build/
 *.synctex.gz
+.venv-ariadion/ 

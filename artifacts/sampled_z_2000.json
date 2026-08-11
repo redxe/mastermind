@@ -1,0 +1,24 @@
+{
+  "counts": [
+    362,
+    84,
+    73,
+    71,
+    71,
+    18,
+    92,
+    83,
+    160,
+    57,
+    38,
+    37,
+    206,
+    48,
+    282,
+    318
+  ],
+  "energy_group_estimate_artifact_reduction": -1.19,
+  "seed": 101002000,
+  "setting": "Z",
+  "shots": 2000
+}

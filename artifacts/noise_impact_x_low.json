@@ -1,0 +1,461 @@
+{
+  "comparison": {
+    "circuit_id": "python:__main__:tfim_x_setting",
+    "ideal_backend_id": "reference-density-matrix",
+    "ideal_baseline_derivation": "ideal baseline re-executed on the same compiled circuit with executable noise disabled; schedule-dependent idle decoherence is not executed during ideal replay",
+    "ideal_baseline_mode": "ideal_noise_disabled_replay",
+    "metric_tolerance": 1e-12,
+    "noisy_backend_id": "reference-density-matrix",
+    "noisy_idle_decoherence": null,
+    "noisy_schedule": null,
+    "representation": "density_matrix"
+  },
+  "event_findings": [
+    {
+      "gate": {
+        "application_order": 0,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:261:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 0
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 1,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:262:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 1
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 2,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:263:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 2
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 3,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:264:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 3
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 4,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:268:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 0
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 5,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:269:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 1
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 6,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:270:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 2
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 7,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry",
+        "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:271:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 3
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 8,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "h",
+        "operation_id": "python:__main__:tfim_x_setting:python:gate-h:272:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 0
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 9,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "h",
+        "operation_id": "python:__main__:tfim_x_setting:python:gate-h:273:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 1
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 10,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "h",
+        "operation_id": "python:__main__:tfim_x_setting:python:gate-h:274:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 2
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": {
+        "application_order": 11,
+        "application_ordering": "ideal_then_channel",
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "h",
+        "operation_id": "python:__main__:tfim_x_setting:python:gate-h:275:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "target_slot": 3
+      },
+      "idle": null,
+      "kind": "gate_channel",
+      "provenance": "observed",
+      "readout": null,
+      "summary": "Modeled post-gate channel application event"
+    },
+    {
+      "gate": null,
+      "idle": null,
+      "kind": "readout_distortion",
+      "provenance": "observed",
+      "readout": {
+        "channel": {
+          "p_one_given_zero": 0.01,
+          "p_zero_given_one": 0.01
+        },
+        "physical_vs_reported_tvd": 0.035534812008545816
+      },
+      "summary": "Modeled classical readout distortion evidence"
+    }
+  ],
+  "ideal_physical_distribution": [
+    0.8405321625876794,
+    0.019725087683478176,
+    2.4763002495051305e-06,
+    0.03650196981309704,
+    0.0012148835171130294,
+    0.0014628755931997272,
+    0.04376974456319106,
+    4.180563049962297e-05,
+    0.0041021718546457656,
+    3.8937614026899255e-08,
+    0.0022987512661258877,
+    0.00010392727737955495,
+    0.04665995889411488,
+    0.0006882402164785628,
+    0.0010593584574912903,
+    0.00183654740764099
+  ],
+  "ideal_state": {
+    "basis": "computational",
+    "basis_dependent": true,
+    "computational_basis_populations": [
+      0.8405321625876794,
+      0.019725087683478176,
+      2.4763002495051305e-06,
+      0.03650196981309704,
+      0.0012148835171130294,
+      0.0014628755931997272,
+      0.04376974456319106,
+      4.180563049962297e-05,
+      0.0041021718546457656,
+      3.8937614026899255e-08,
+      0.0022987512661258877,
+      0.00010392727737955495,
+      0.04665995889411488,
+      0.0006882402164785628,
+      0.0010593584574912903,
+      0.00183654740764099
+    ],
+    "dimension": 16,
+    "l1_coherence": 2.9152226404073307,
+    "purity": 0.9999999999999969,
+    "qubit_count": 4
+  },
+  "limitations": {
+    "statements": [
+      "Hilbert-Schmidt distance is a deterministic diagnostic metric; it is not an operational error probability.",
+      "Computational-basis population and l1 coherence metrics are basis dependent.",
+      "Readout distortion modifies reported classical outcomes and is not quantum-state damage.",
+      "Noise effects are generally non-additive. Event evidence identifies modeled noise applications and parameters; it does not partition total state deviation into causal percentages.",
+      "Purity change is reported relative to the matched ideal baseline; the ideal baseline may already be mixed due to execution semantics."
+    ]
+  },
+  "metrics": [
+    {
+      "basis": null,
+      "basis_dependent": false,
+      "definition": "sqrt(sum_ij |rho_noisy[i,j] - rho_ideal[i,j]|^2)",
+      "name": "hilbert_schmidt_distance",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": 0.045918564465794995
+    },
+    {
+      "basis": "computational",
+      "basis_dependent": true,
+      "definition": "0.5 * sum_i |p_noisy[i] - p_ideal[i]| where p_i = rho[i,i]",
+      "name": "computational_basis_population_tvd",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": 0.03242368663166984
+    },
+    {
+      "basis": "computational",
+      "basis_dependent": true,
+      "definition": "C_l1(rho) = sum_(i != j) |rho[i,j]|",
+      "name": "ideal_l1_coherence",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": 2.9152226404073307
+    },
+    {
+      "basis": "computational",
+      "basis_dependent": true,
+      "definition": "C_l1(rho) = sum_(i != j) |rho[i,j]|",
+      "name": "noisy_l1_coherence",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": 2.784011608412034
+    },
+    {
+      "basis": "computational",
+      "basis_dependent": true,
+      "definition": "C_l1(rho_noisy) - C_l1(rho_ideal)",
+      "name": "delta_l1_coherence",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": -0.1312110319952966
+    },
+    {
+      "basis": "computational",
+      "basis_dependent": true,
+      "definition": "sum_(i != j) ||rho_noisy[i,j]| - |rho_ideal[i,j]||",
+      "name": "absolute_l1_coherence_magnitude_change",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": 0.19779381938723978
+    },
+    {
+      "basis": null,
+      "basis_dependent": false,
+      "definition": "Tr(rho_ideal^2)",
+      "name": "ideal_purity",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": 0.9999999999999969
+    },
+    {
+      "basis": null,
+      "basis_dependent": false,
+      "definition": "Tr(rho_noisy^2)",
+      "name": "noisy_purity",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": 0.9173111115078513
+    },
+    {
+      "basis": null,
+      "basis_dependent": false,
+      "definition": "Tr(rho_noisy^2) - Tr(rho_ideal^2)",
+      "name": "delta_purity",
+      "provenance": "derived",
+      "scope": "state",
+      "tolerance": 1e-12,
+      "value": -0.08268888849214562
+    },
+    {
+      "basis": null,
+      "basis_dependent": false,
+      "definition": "TVD(ideal physical distribution, noisy physical distribution)",
+      "name": "physical_output_tvd",
+      "provenance": "derived",
+      "scope": "output_distribution",
+      "tolerance": 1e-12,
+      "value": 0.03242368663166984
+    },
+    {
+      "basis": null,
+      "basis_dependent": false,
+      "definition": "TVD(noisy physical distribution, reported/readout distribution)",
+      "name": "readout_distortion_tvd",
+      "provenance": "derived",
+      "scope": "output_distribution",
+      "tolerance": 1e-12,
+      "value": 0.035534812008545816
+    }
+  ],
+  "noisy_physical_distribution": [
+    0.8081084759560089,
+    0.027241266996313334,
+    0.006480076527865704,
+    0.03771435818907851,
+    0.007368680921173907,
+    0.0018968020980370238,
+    0.044714742673541905,
+    0.0008455686935960253,
+    0.009769738373173747,
+    0.0002623389029740396,
+    0.0025650892366722603,
+    0.0004217585250729726,
+    0.04757439154299378,
+    0.0012234591196208192,
+    0.0017461267028668665,
+    0.0020671255410074007
+  ],
+  "noisy_state": {
+    "basis": "computational",
+    "basis_dependent": true,
+    "computational_basis_populations": [
+      0.8081084759560089,
+      0.027241266996313334,
+      0.006480076527865704,
+      0.03771435818907851,
+      0.007368680921173907,
+      0.0018968020980370238,
+      0.044714742673541905,
+      0.0008455686935960253,
+      0.009769738373173747,
+      0.0002623389029740396,
+      0.0025650892366722603,
+      0.0004217585250729726,
+      0.04757439154299378,
+      0.0012234591196208192,
+      0.0017461267028668665,
+      0.0020671255410074007
+    ],
+    "dimension": 16,
+    "l1_coherence": 2.784011608412034,
+    "purity": 0.9173111115078513,
+    "qubit_count": 4
+  },
+  "reported_distribution": [
+    0.7767724782998651,
+    0.034398467949367434,
+    0.014895198191428673,
+    0.036652027925577514,
+    0.015837957822431328,
+    0.002270147185862555,
+    0.043200564993254316,
+    0.001655730246716083,
+    0.017719333670002745,
+    0.0007153011430384281,
+    0.0027349302421990755,
+    0.0008241032315373135,
+    0.04597916430731154,
+    0.0016834004542105219,
+    0.0026211479691183644,
+    0.002040046368076233
+  ],
+  "schema_version": 1
+}

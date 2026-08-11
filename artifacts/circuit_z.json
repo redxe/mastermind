@@ -1,0 +1,632 @@
+{
+  "ascii_circuit": "q0: \u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25cf\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[M]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nq1: \u2500\u2500\u2500\u2500\u2500\u2500\u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[X]\u2500\u2500\u2500\u25cf\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[M]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nq2: \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[X]\u2500\u2500\u2500\u25cf\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[M]\u2500\u2500\u2500\u2500\u2500\u2500\nq3: \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[X]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[RY]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[M]\u2500",
+  "circuit_ir": {
+    "id": "python:__main__:tfim_z_setting",
+    "name": "tfim_z_setting",
+    "operations": [
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 1.1148874287564283
+        },
+        "angle_radians": 1.1148874287564283,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:240:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:240:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:240:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 36,
+          "end_line": 240,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 240,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:240:5:0"
+        },
+        "targets": [
+          0
+        ]
+      },
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 1.1148874287564283
+        },
+        "angle_radians": 1.1148874287564283,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:241:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:241:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:241:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 36,
+          "end_line": 241,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 241,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:241:5:0"
+        },
+        "targets": [
+          1
+        ]
+      },
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 1.1148874287564283
+        },
+        "angle_radians": 1.1148874287564283,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:242:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:242:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:242:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 36,
+          "end_line": 242,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 242,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:242:5:0"
+        },
+        "targets": [
+          2
+        ]
+      },
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 1.1148874287564283
+        },
+        "angle_radians": 1.1148874287564283,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:243:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:243:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:243:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 36,
+          "end_line": 243,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 243,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:243:5:0"
+        },
+        "targets": [
+          3
+        ]
+      },
+      {
+        "angle_metadata": null,
+        "angle_radians": null,
+        "controls": [
+          0
+        ],
+        "id": "python:__main__:tfim_z_setting:python:gate-cx:244:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "CX",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:gate-cx:244:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:gate-cx:244:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 15,
+          "end_line": 244,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 244,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:gate-cx:244:5:0"
+        },
+        "targets": [
+          1
+        ]
+      },
+      {
+        "angle_metadata": null,
+        "angle_radians": null,
+        "controls": [
+          1
+        ],
+        "id": "python:__main__:tfim_z_setting:python:gate-cx:245:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "CX",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:gate-cx:245:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:gate-cx:245:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 15,
+          "end_line": 245,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 245,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:gate-cx:245:5:0"
+        },
+        "targets": [
+          2
+        ]
+      },
+      {
+        "angle_metadata": null,
+        "angle_radians": null,
+        "controls": [
+          2
+        ],
+        "id": "python:__main__:tfim_z_setting:python:gate-cx:246:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "CX",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:gate-cx:246:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:gate-cx:246:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 15,
+          "end_line": 246,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 246,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:gate-cx:246:5:0"
+        },
+        "targets": [
+          3
+        ]
+      },
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 0.20641951023931937
+        },
+        "angle_radians": 0.20641951023931937,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:247:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:247:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:247:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 37,
+          "end_line": 247,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 247,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:247:5:0"
+        },
+        "targets": [
+          0
+        ]
+      },
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 0.20641951023931937
+        },
+        "angle_radians": 0.20641951023931937,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:248:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:248:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:248:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 37,
+          "end_line": 248,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 248,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:248:5:0"
+        },
+        "targets": [
+          1
+        ]
+      },
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 0.20641951023931937
+        },
+        "angle_radians": 0.20641951023931937,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:249:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:249:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:249:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 37,
+          "end_line": 249,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 249,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:249:5:0"
+        },
+        "targets": [
+          2
+        ]
+      },
+      {
+        "angle_metadata": {
+          "source_unit": "radians",
+          "source_value": 0.20641951023931937
+        },
+        "angle_radians": 0.20641951023931937,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:rotation-y:250:5:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": null,
+        "observation": null,
+        "opcode": "RY",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:250:5:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:rotation-y:250:5:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 5,
+          "end_column": 37,
+          "end_line": 250,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 250,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:rotation-y:250:5:0"
+        },
+        "targets": [
+          3
+        ]
+      },
+      {
+        "angle_metadata": null,
+        "angle_radians": null,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:inferred-observation:251:12:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": "python:__main__:tfim_z_setting:python:observation-result:251:12:0:classical-bit",
+        "observation": {
+          "basis_name": "z",
+          "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:236:10:0:qubit",
+          "reason": "classical_return",
+          "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:12:0:classical-bit"
+        },
+        "opcode": "MEASURE",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:12:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:12:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 12,
+          "end_column": 14,
+          "end_line": 251,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 251,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:12:0"
+        },
+        "targets": [
+          0
+        ]
+      },
+      {
+        "angle_metadata": null,
+        "angle_radians": null,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:inferred-observation:251:16:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": "python:__main__:tfim_z_setting:python:observation-result:251:16:0:classical-bit",
+        "observation": {
+          "basis_name": "z",
+          "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:237:10:0:qubit",
+          "reason": "classical_return",
+          "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:16:0:classical-bit"
+        },
+        "opcode": "MEASURE",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:16:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:16:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 16,
+          "end_column": 18,
+          "end_line": 251,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 251,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:16:0"
+        },
+        "targets": [
+          1
+        ]
+      },
+      {
+        "angle_metadata": null,
+        "angle_radians": null,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:inferred-observation:251:20:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": "python:__main__:tfim_z_setting:python:observation-result:251:20:0:classical-bit",
+        "observation": {
+          "basis_name": "z",
+          "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:238:10:0:qubit",
+          "reason": "classical_return",
+          "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:20:0:classical-bit"
+        },
+        "opcode": "MEASURE",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:20:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:20:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 20,
+          "end_column": 22,
+          "end_line": 251,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 251,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:20:0"
+        },
+        "targets": [
+          2
+        ]
+      },
+      {
+        "angle_metadata": null,
+        "angle_radians": null,
+        "controls": [],
+        "id": "python:__main__:tfim_z_setting:python:inferred-observation:251:24:0:operation:daidalon:logical-allocation-lowering:0",
+        "key": "python:__main__:tfim_z_setting:python:observation-result:251:24:0:classical-bit",
+        "observation": {
+          "basis_name": "z",
+          "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:239:10:0:qubit",
+          "reason": "classical_return",
+          "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:24:0:classical-bit"
+        },
+        "opcode": "MEASURE",
+        "provenance": {
+          "call_stack": [],
+          "parent_logical_operation_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:24:0:operation"
+          ],
+          "parent_source_ids": [
+            "python:__main__:tfim_z_setting:python:inferred-observation:251:24:0"
+          ],
+          "transformation": "logical-allocation-lowering"
+        },
+        "source": {
+          "_snapshot_operation_id": null,
+          "column": 24,
+          "end_column": 26,
+          "end_line": 251,
+          "file": "E:\\Quantum\\mastermind\\scripts\\demo_tfim_audit.py",
+          "line": 251,
+          "program_id": "python:__main__:tfim_z_setting",
+          "source_node_id": null,
+          "source_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:24:0"
+        },
+        "targets": [
+          3
+        ]
+      }
+    ],
+    "qubit_count": 4
+  },
+  "readout": {
+    "observations": [
+      {
+        "allocated_slot": 0,
+        "basis": {
+          "name": "z"
+        },
+        "logical_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:12:0:operation",
+        "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:236:10:0:qubit",
+        "reason": "classical_return",
+        "result_display_name": "q0_result",
+        "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:12:0:classical-bit"
+      },
+      {
+        "allocated_slot": 1,
+        "basis": {
+          "name": "z"
+        },
+        "logical_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:16:0:operation",
+        "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:237:10:0:qubit",
+        "reason": "classical_return",
+        "result_display_name": "q1_result",
+        "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:16:0:classical-bit"
+      },
+      {
+        "allocated_slot": 2,
+        "basis": {
+          "name": "z"
+        },
+        "logical_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:20:0:operation",
+        "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:238:10:0:qubit",
+        "reason": "classical_return",
+        "result_display_name": "q2_result",
+        "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:20:0:classical-bit"
+      },
+      {
+        "allocated_slot": 3,
+        "basis": {
+          "name": "z"
+        },
+        "logical_operation_id": "python:__main__:tfim_z_setting:python:inferred-observation:251:24:0:operation",
+        "logical_qubit_id": "python:__main__:tfim_z_setting:python:qubit-declaration:239:10:0:qubit",
+        "reason": "classical_return",
+        "result_display_name": "q3_result",
+        "result_id": "python:__main__:tfim_z_setting:python:observation-result:251:24:0:classical-bit"
+      }
+    ],
+    "return_shape": {
+      "items": [
+        {
+          "value": {
+            "kind": "classical_bit",
+            "value_id": "python:__main__:tfim_z_setting:python:observation-result:251:12:0:classical-bit"
+          }
+        },
+        {
+          "value": {
+            "kind": "classical_bit",
+            "value_id": "python:__main__:tfim_z_setting:python:observation-result:251:16:0:classical-bit"
+          }
+        },
+        {
+          "value": {
+            "kind": "classical_bit",
+            "value_id": "python:__main__:tfim_z_setting:python:observation-result:251:20:0:classical-bit"
+          }
+        },
+        {
+          "value": {
+            "kind": "classical_bit",
+            "value_id": "python:__main__:tfim_z_setting:python:observation-result:251:24:0:classical-bit"
+          }
+        }
+      ]
+    }
+  },
+  "setting": "Z"
+}

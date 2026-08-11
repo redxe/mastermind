@@ -1,0 +1,247 @@
+{
+  "depolarizing_p": 0.005,
+  "gate_noise_events": [
+    {
+      "application_order": 0,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:261:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 0
+    },
+    {
+      "application_order": 1,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:262:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 1
+    },
+    {
+      "application_order": 2,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:263:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 2
+    },
+    {
+      "application_order": 3,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:264:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 3
+    },
+    {
+      "application_order": 4,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:268:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 0
+    },
+    {
+      "application_order": 5,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:269:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 1
+    },
+    {
+      "application_order": 6,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:270:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 2
+    },
+    {
+      "application_order": 7,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "ry",
+      "operation_id": "python:__main__:tfim_x_setting:python:rotation-y:271:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 3
+    },
+    {
+      "application_order": 8,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "h",
+      "operation_id": "python:__main__:tfim_x_setting:python:gate-h:272:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 0
+    },
+    {
+      "application_order": 9,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "h",
+      "operation_id": "python:__main__:tfim_x_setting:python:gate-h:273:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 1
+    },
+    {
+      "application_order": 10,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "h",
+      "operation_id": "python:__main__:tfim_x_setting:python:gate-h:274:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 2
+    },
+    {
+      "application_order": 11,
+      "application_ordering": "ideal_then_channel",
+      "channel": {
+        "probability": 0.005
+      },
+      "gate": "h",
+      "operation_id": "python:__main__:tfim_x_setting:python:gate-h:275:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "target_slot": 3
+    }
+  ],
+  "noise_level": "low",
+  "physical_distribution": {
+    "bit_order": "targets_lsb_first",
+    "probabilities": [
+      0.8081084759560089,
+      0.027241266996313334,
+      0.006480076527865704,
+      0.03771435818907851,
+      0.007368680921173907,
+      0.0018968020980370238,
+      0.044714742673541905,
+      0.0008455686935960253,
+      0.009769738373173747,
+      0.0002623389029740396,
+      0.0025650892366722603,
+      0.0004217585250729726,
+      0.04757439154299378,
+      0.0012234591196208192,
+      0.0017461267028668665,
+      0.0020671255410074007
+    ],
+    "result_ids": [
+      "python:__main__:tfim_x_setting:python:observation-result:276:12:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:16:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:20:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:24:0:classical-bit"
+    ],
+    "scope": "joint_return"
+  },
+  "provenance": {
+    "backend_id": "reference-density-matrix",
+    "circuit_id": "python:__main__:tfim_x_setting",
+    "classical_result_ids": [
+      "python:__main__:tfim_x_setting:python:observation-result:276:12:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:16:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:20:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:24:0:classical-bit"
+    ],
+    "coverage": {
+      "assumptions": [
+        "reference-density-matrix backend",
+        "gate channels are applied after the ideal gate",
+        "readout noise is applied after the physical distribution"
+      ],
+      "completeness_issues": [
+        "ideal_only_two_qubit_operation_present"
+      ],
+      "executed_noise_features": [
+        "gate_channels",
+        "readout_errors"
+      ],
+      "unsupported_features": []
+    },
+    "gate_event_operation_ids": [
+      "python:__main__:tfim_x_setting:python:rotation-y:261:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:rotation-y:262:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:rotation-y:263:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:rotation-y:264:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:rotation-y:268:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:rotation-y:269:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:rotation-y:270:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:rotation-y:271:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:gate-h:272:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:gate-h:273:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:gate-h:274:5:0:operation:daidalon:logical-allocation-lowering:0",
+      "python:__main__:tfim_x_setting:python:gate-h:275:5:0:operation:daidalon:logical-allocation-lowering:0"
+    ],
+    "gate_noise_bindings": [
+      {
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "h"
+      },
+      {
+        "channel": {
+          "probability": 0.005
+        },
+        "gate": "ry"
+      }
+    ],
+    "idle_decoherence": null,
+    "idle_event_slots": [],
+    "physical_distribution_size": 16,
+    "readout_channel": {
+      "p_one_given_zero": 0.01,
+      "p_zero_given_one": 0.01
+    },
+    "reported_distribution_size": 16,
+    "reported_matches_physical": false,
+    "schedule": null
+  },
+  "readout_p": 0.01,
+  "reported_distribution": {
+    "bit_order": "targets_lsb_first",
+    "probabilities": [
+      0.7767724782998651,
+      0.034398467949367434,
+      0.014895198191428673,
+      0.036652027925577514,
+      0.015837957822431328,
+      0.002270147185862555,
+      0.043200564993254316,
+      0.001655730246716083,
+      0.017719333670002745,
+      0.0007153011430384281,
+      0.0027349302421990755,
+      0.0008241032315373135,
+      0.04597916430731154,
+      0.0016834004542105219,
+      0.0026211479691183644,
+      0.002040046368076233
+    ],
+    "result_ids": [
+      "python:__main__:tfim_x_setting:python:observation-result:276:12:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:16:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:20:0:classical-bit",
+      "python:__main__:tfim_x_setting:python:observation-result:276:24:0:classical-bit"
+    ],
+    "scope": "joint_return"
+  },
+  "setting": "X"
+}

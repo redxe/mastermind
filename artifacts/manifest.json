@@ -1,0 +1,134 @@
+{
+  "ariadion": {
+    "backend": "ariadion-simulator-numpy (pure-Python/NumPy state-vector and density-matrix simulator)",
+    "commit": "d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f",
+    "commit_is_tip_of_main": true,
+    "execution_modes": [
+      "exact state-vector (+trace)",
+      "seeded sampled",
+      "density-matrix"
+    ],
+    "expectation_values": "Ariadion exposes no public expectation-value helper; energy reduction from joint distributions is performed by this paper artifact (energy_from_distributions / energy_from_counts in scripts/demo_tfim_audit.py)",
+    "known_omissions_of_density_path": [
+      "no modeled two-qubit CX noise (channels bind to one-qubit gates only)",
+      "no leakage modeling",
+      "no correlated-error modeling",
+      "no device-calibration ingestion"
+    ],
+    "newer_release_check": "verified before freezing: only tag is v0.1.0rc1 (older than pinned commit); no GitHub releases exist; pinned commit is the newest intentional state",
+    "protection_requirement_report": "NOT used: TFIM energy estimation has no natural accept/reject event and none was fabricated to obtain a reliability verdict",
+    "role": "author-developed, version-pinned research artifact; NOT a hardware model and NOT independently validated except via the NumPy oracle in this artifact",
+    "version": "0.1.0rc2"
+  },
+  "artifact_files": [
+    "circuit_z.json",
+    "circuit_x.json",
+    "ideal_z.json",
+    "ideal_x.json",
+    "sampled_z_2000.json",
+    "sampled_z_7042.json",
+    "sampled_z_171776.json",
+    "sampled_x_2000.json",
+    "sampled_x_6475.json",
+    "sampled_x_171776.json",
+    "density_z_low.json",
+    "density_x_low.json",
+    "density_z_high.json",
+    "density_x_high.json",
+    "noise_impact_z_low.json",
+    "noise_impact_x_low.json",
+    "noise_impact_z_high.json",
+    "noise_impact_x_high.json",
+    "theonoe_z.json",
+    "theonoe_x.json",
+    "oracle.json"
+  ],
+  "circuit": {
+    "angle_provenance": "scripts/_choose_angles.py (offline grid + coordinate descent)",
+    "ansatz": "RY(theta1)^x4; CX(0,1) CX(1,2) CX(2,3); RY(theta2)^x4",
+    "bit_order": "TARGETS_LSB_FIRST: outcome index bit i = i-th returned qubit",
+    "settings": {
+      "X": "terminal Hadamard on every qubit, then joint Z-basis (X group)",
+      "Z": "joint Z-basis measurement of all returned qubits (ZZ group)"
+    },
+    "theta1_rad": 1.1148874287564283,
+    "theta2_rad": 0.20641951023931937
+  },
+  "contract": {
+    "delta": 0.05,
+    "eps": 0.05,
+    "groups": {
+      "X": {
+        "a": 4.0
+      },
+      "Z": {
+        "a": 3.0
+      }
+    }
+  },
+  "coverage_experiment_note": "400 trials drawn by the paper artifact's seeded NumPy sampler from Ariadion's exported ideal joint distributions; repeating 400 full Ariadion sampled runs is out of scope for a pure-Python simulator",
+  "environment": {
+    "dependency_lock_pip_freeze": [
+      "ariadion @ file:///E:/Quantum/ariadion-pinned/packages/sdk",
+      "ariadion-core @ file:///E:/Quantum/ariadion-pinned/packages/core",
+      "ariadion-frontend-python @ file:///E:/Quantum/ariadion-pinned/packages/frontend-python",
+      "ariadion-ir @ file:///E:/Quantum/ariadion-pinned/packages/ir",
+      "ariadion-language @ file:///E:/Quantum/ariadion-pinned/packages/language",
+      "ariadion-noise @ file:///E:/Quantum/ariadion-pinned/packages/noise",
+      "ariadion-runtime @ file:///E:/Quantum/ariadion-pinned/packages/runtime",
+      "ariadion-semantics @ file:///E:/Quantum/ariadion-pinned/packages/semantics",
+      "ariadion-simulator @ file:///E:/Quantum/ariadion-pinned/packages/simulator",
+      "ariadion-simulator-numpy @ file:///E:/Quantum/ariadion-pinned/packages/simulator-numpy",
+      "ariadion-syntax @ file:///E:/Quantum/ariadion-pinned/packages/syntax",
+      "ariadion-visualization @ file:///E:/Quantum/ariadion-pinned/packages/visualization",
+      "daidalon @ file:///E:/Quantum/ariadion-pinned/packages/daidalon",
+      "numpy==2.4.6",
+      "theonoe @ file:///E:/Quantum/ariadion-pinned/packages/theonoe"
+    ],
+    "platform": "Windows-10-10.0.19045-SP0",
+    "python": "3.11.4"
+  },
+  "experiment": "TFIM grouped-energy audit demonstration (Appendix C)",
+  "hamiltonian": {
+    "J": 1.0,
+    "h": 1.0,
+    "model": "open-chain TFIM",
+    "n": 4
+  },
+  "reported_shot_counts": {
+    "X": [
+      2000,
+      6475,
+      171776
+    ],
+    "Z": [
+      2000,
+      7042,
+      171776
+    ]
+  },
+  "results": {
+    "E0": -4.758770483143632,
+    "E_ariadion_ideal": -4.653959235148468,
+    "E_hat_neyman": -4.628892590403525,
+    "E_hat_worst": -4.657111587183309,
+    "E_psi_oracle": -4.653959235148471,
+    "coverage_neyman": 0.955,
+    "coverage_worst": 1.0,
+    "decision": "classical-only",
+    "density_energies": {
+      "high": -4.1285765180478275,
+      "low": -4.431757498746323
+    },
+    "dna_decision": "classical-only"
+  },
+  "seeds": {
+    "master_numpy_rng": 20260811,
+    "reproducibility_pair_seed": 777,
+    "sample_seeds": {
+      "X": 202,
+      "Z": 101
+    },
+    "sampled_run_seed_rule": "SAMPLE_SEEDS[setting]*1_000_000 + shots % 1_000_000"
+  }
+}
