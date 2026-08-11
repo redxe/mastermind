@@ -1,0 +1,11 @@
+# Never convert line endings inside archived evidence artifacts: their SHA-256
+# hashes must be byte-stable across operating systems and git configurations.
+artifacts/** -text
+
+# Keep scripts and sources LF in the repository.
+*.py text eol=lf
+*.tex text eol=lf
+*.bib text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

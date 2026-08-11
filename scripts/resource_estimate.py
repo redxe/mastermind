@@ -8,7 +8,11 @@ Two workloads are estimated:
 
   A. The screening scenario from Section 4: 1,000 logical qubits and ~1e10
      fault locations. We map "fault locations" to a T-count-dominated logical
-     workload (tCount = 1e10), stated explicitly as a modeling choice.
+     workload (tCount = 1e10), stated explicitly as a modeling choice. This is
+     a SYNTHETIC SENSITIVITY SCENARIO, not a compiled algorithm: no algorithmic
+     trace or logical circuit backs the 1e10 T count, so the outputs quantify
+     how the estimator's layered models respond to inputs of this size, and
+     must not be quoted as a resource estimate for any actual application.
 
   B. The 4-qubit TFIM audit circuit from Appendix C (8 RY rotations, 3 CX,
      4 measurements) as a floor demonstration: even a trivial circuit incurs
@@ -132,8 +136,8 @@ def main():
     table = "\n".join(lines)
     print(table)
 
-    (OUTDIR / "sensitivity_table.txt").write_text(table + "\n", encoding="utf-8")
-    (OUTDIR / "results.json").write_text(json.dumps(full, indent=1), encoding="utf-8")
+    (OUTDIR / "sensitivity_table.txt").write_text(table + "\n", encoding="utf-8", newline="\n")
+    (OUTDIR / "results.json").write_text(json.dumps(full, indent=1), encoding="utf-8", newline="\n")
 
     freeze = subprocess.run([sys.executable, "-m", "pip", "freeze"], capture_output=True, text=True).stdout
     manifest = {
@@ -144,19 +148,21 @@ def main():
         "workloads": {k: dict(v) for k, v in WORKLOADS.items()},
         "modeling_choices": [
             "Section 4's L=1e10 fault locations mapped to tCount=1e10 on 1000 logical qubits (T-count-dominated workload).",
+            "screening_1000q_1e10T is a SYNTHETIC sensitivity scenario, not a compiled algorithm; do not quote as an application estimate.",
+            "Post-layout logical qubit counts are model-dependent outputs of the estimator's layout model, not absolute corrections.",
             "Gate-based models use surface_code QEC; Majorana models use floquet_code.",
             "TFIM audit circuit counts taken from the untranspiled logical circuit: 8 RY, 3 CX (Clifford), 4 measurements.",
         ],
         "pip_freeze": freeze.splitlines(),
     }
-    (OUTDIR / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
+    (OUTDIR / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8", newline="\n")
 
     sums = []
     for f in sorted(OUTDIR.glob("*")):
         if f.name == "SHA256SUMS.txt":
             continue
         sums.append(f"{hashlib.sha256(f.read_bytes()).hexdigest()}  {f.name}")
-    (OUTDIR / "SHA256SUMS.txt").write_text("\n".join(sums) + "\n", encoding="utf-8")
+    (OUTDIR / "SHA256SUMS.txt").write_text("\n".join(sums) + "\n", encoding="utf-8", newline="\n")
     print(f"\nwrote artifacts to {OUTDIR}")
 
 

@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-08-11T21:50:53.916985+00:00",
+ "generated_utc": "2026-08-11T23:33:31.841864+00:00",
  "python": "3.11.4",
  "platform": "Windows-10-10.0.19045-SP0",
  "numpy": "2.4.6",
@@ -11,7 +11,16 @@
   "theta2": 0.20641951023931937,
   "shots_fixed": 4096,
   "eps_rule": "0.05*n",
+  "delta": 0.05,
   "seed": 20260811
+ },
+ "shot_formulas": {
+  "worst": "N_g = ceil(2 (sum_h a_h)^2 ln(2G/delta) / eps^2), Hoeffding + union bound; finite-sample",
+  "neyman": "N_g = ceil(z_{1-delta/2}^2 sigma_g (sum_h sigma_h) / eps^2); asymptotic normal, variance-target"
+ },
+ "baselines": {
+  "free_fermion": "exact E0 via Jordan-Wigner (Pfeuty 1970), O(n^3); the matched classical opponent",
+  "dense_eigh": "generic structure-blind solver, O(8^n); shown for contrast only, capped at n=14"
  },
  "note": "Wall times are single-run measurements on one workstation; scaling trend, not benchmark."
 }

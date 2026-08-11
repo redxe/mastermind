@@ -221,8 +221,8 @@ def main():
                                "total_shots": total_response_shots},
         "error_split": {"eps_trotter": EPS_TROTTER, "eps_meas": EPS_MEAS},
     }
-    (OUTDIR / "results.json").write_text(json.dumps(results, indent=1), encoding="utf-8")
-    (OUTDIR / "budget_table.txt").write_text(table + "\n", encoding="utf-8")
+    (OUTDIR / "results.json").write_text(json.dumps(results, indent=1), encoding="utf-8", newline="\n")
+    (OUTDIR / "budget_table.txt").write_text(table + "\n", encoding="utf-8", newline="\n")
     manifest = {
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "python": platform.python_version(),
@@ -230,13 +230,13 @@ def main():
         "numpy": np.__version__,
         "note": "Fully classical baseline instantiation of the Section 9 workflow for a bounded model; no quantum execution claimed.",
     }
-    (OUTDIR / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
+    (OUTDIR / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8", newline="\n")
     sums = []
     for f in sorted(OUTDIR.glob("*")):
         if f.name == "SHA256SUMS.txt":
             continue
         sums.append(f"{hashlib.sha256(f.read_bytes()).hexdigest()}  {f.name}")
-    (OUTDIR / "SHA256SUMS.txt").write_text("\n".join(sums) + "\n", encoding="utf-8")
+    (OUTDIR / "SHA256SUMS.txt").write_text("\n".join(sums) + "\n", encoding="utf-8", newline="\n")
     print(f"\nwrote artifacts to {OUTDIR}")
 
 

@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-08-11T21:33:50.322487+00:00",
+ "generated_utc": "2026-08-11T23:32:03.422865+00:00",
  "python": "3.11.4",
  "platform": "Windows-10-10.0.19045-SP0",
  "tool": "Microsoft (Azure Quantum) Resource Estimator via qdk Python package, run locally",
@@ -25,6 +25,8 @@
  },
  "modeling_choices": [
   "Section 4's L=1e10 fault locations mapped to tCount=1e10 on 1000 logical qubits (T-count-dominated workload).",
+  "screening_1000q_1e10T is a SYNTHETIC sensitivity scenario, not a compiled algorithm; do not quote as an application estimate.",
+  "Post-layout logical qubit counts are model-dependent outputs of the estimator's layout model, not absolute corrections.",
   "Gate-based models use surface_code QEC; Majorana models use floquet_code.",
   "TFIM audit circuit counts taken from the untranspiled logical circuit: 8 RY, 3 CX (Clifford), 4 measurements."
  ],

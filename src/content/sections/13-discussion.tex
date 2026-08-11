@@ -30,7 +30,8 @@ Readout and input access can erase query speedups & Established theorems & \cite
 Shot budgets \eqref{eq:hoeffding}--\eqref{eq:neyman-shots} and their $\sim$150$\times$ spread & Theorem + engineering approximation & Derivations in \cref{sec:resources}; machine-verified and empirically coverage-tested (\cref{app:demo}) \\
 Toy noise screen and fault-tolerant floor & Engineering approximations & Stated assumptions; scaling form observed experimentally \citep{acharya2025} \\
 Mitigation is sampling debt & Established theory + empirical evidence & \citep{cai2023,quek2024} \\
-The audit procedure (Algorithm 1) is useful & Author synthesis & One reproducible small-scale execution (\cref{app:demo}); hardware-scale validation open (\cref{sec:audits}) \\
+The audit procedure (Algorithm 1) is useful & Author synthesis & One reproducible small-scale execution, cross-validated in a second SDK and run once on physical hardware (\cref{app:demo}); validation on an uncertain instance open (\cref{sec:audits}) \\
+Noise triage predicts the direction of hardware bias & Empirical evidence (one instance, one device-day) & Single uncorrected \texttt{ibm\_kingston} run; shot-noise-only uncertainty (\cref{app:demo}) \\
 Domain audits (DNA, scheduling, HEP, astronomy) & Author synthesis + provisional hypotheses & Framing analyses; quantitative rejection of phase encoding in \cref{app:demo} \\
 Astronomy opportunity ranking & Provisional hypothesis & Author judgment under stated criteria (\cref{sec:astro}) \\
 \bottomrule

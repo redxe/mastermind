@@ -34,5 +34,7 @@ Thank you for the detailed critique. Below, point by point, is what changed, wha
 
 We did not run a hardware experiment, an established resource estimator, or a systematic literature review; the manuscript says so where it matters and the revision record lists every remaining gap. We prefer a visible TODO to a confident sentence we cannot back.
 
+> **Postscript (2026-08-11, after this memorandum was written):** the first two items above have since been executed and archived — an independent Qiskit cross-validation, a calibrated-noise simulation, a single uncorrected physical run on IBM `ibm_kingston` (one four-qubit, classically solvable instance; shot-noise-only uncertainty), a local Azure Quantum Resource Estimator sweep (labeled a synthetic sensitivity scenario, not an application estimate), and a bounded Schwinger-model instantiation. See REVISION_RECORD.md third and fourth passes. What remains open is listed there: validation on a genuinely uncertain instance, a controlled model-versus-device comparison, systematic-uncertainty characterization, and error-mitigated/corrected performance.
+
 Sincerely,
 Vi Connelly

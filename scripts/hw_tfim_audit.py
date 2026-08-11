@@ -243,7 +243,7 @@ def run_aer(circs, shots_map):
     backend = AerSimulator(seed_simulator=SHOT_SEED)
     results = {}
     for name, qc in circs.items():
-        tqc = transpile(qc, backend)
+        tqc = transpile(qc, backend, seed_transpiler=SHOT_SEED)
         res = backend.run(tqc, shots=shots_map[name]).result()
         results[name] = {"counts": counts_to_index(res.get_counts()),
                          "transpiled": tqc, "job_id": None}
@@ -264,7 +264,8 @@ def run_sampler(backend, circs, shots_map, label):
     from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
     from qiskit_ibm_runtime import SamplerV2
 
-    pm = generate_preset_pass_manager(optimization_level=3, backend=backend)
+    pm = generate_preset_pass_manager(optimization_level=3, backend=backend,
+                                      seed_transpiler=SHOT_SEED)
     sampler = SamplerV2(mode=backend)
     results = {}
     for name, qc in circs.items():
@@ -280,7 +281,7 @@ def run_sampler(backend, circs, shots_map, label):
     return results
 
 
-def run_hardware(circs, shots_map):
+def run_hardware(circs, shots_map, backend_name=None):
     from qiskit_ibm_runtime import QiskitRuntimeService
 
     token = os.environ.get("QISKIT_IBM_TOKEN")
@@ -288,7 +289,10 @@ def run_hardware(circs, shots_map):
     if token:
         kwargs = {"channel": "ibm_quantum_platform", "token": token}
     service = QiskitRuntimeService(**kwargs)
-    backend = service.least_busy(operational=True, simulator=False, min_num_qubits=N)
+    if backend_name:
+        backend = service.backend(backend_name)
+    else:
+        backend = service.least_busy(operational=True, simulator=False, min_num_qubits=N)
     print(f"selected hardware backend: {backend.name} ({backend.num_qubits} qubits)")
     snap = calibration_snapshot(backend)
     results = run_sampler(backend, circs, shots_map, f"hardware:{backend.name}")
@@ -300,6 +304,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--backend", choices=["aer", "fake", "hardware"], default="fake")
     ap.add_argument("--fake-name", default="FakeTorino")
+    ap.add_argument("--backend-name", default=None,
+                    help="fixed IBM backend name for --backend hardware "
+                         "(default: least_busy, which is NOT reproducible)")
     ap.add_argument("--shots-scheme", choices=["neyman", "worst"], default="neyman")
     args = ap.parse_args()
 
@@ -356,7 +363,7 @@ def main():
         results = run_sampler(backend_obj, circs, shots_map, f"fake:{args.fake_name}")
         label = f"fake_{args.fake_name.lower()}"
     else:
-        results, snap, backend_obj = run_hardware(circs, shots_map)
+        results, snap, backend_obj = run_hardware(circs, shots_map, args.backend_name)
         label = f"hardware_{snap['backend_name']}"
 
     # energy + error bars from counts (paper-artifact reduction)
