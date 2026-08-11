@@ -37,7 +37,9 @@ jobs:
       - name: Reject undefined references and large overfull boxes
         shell: bash
         run: |
-          LOG=$(ls build/main.log main.log 2>/dev/null | head -n1)
+          LOG=build/main.log
+          [ -f "$LOG" ] || LOG=main.log
+          [ -f "$LOG" ] || { echo "::error::No LaTeX log found."; exit 1; }
           echo "Checking $LOG"
           if grep -E "(undefined references|Reference .* undefined|Citation .* undefined)" "$LOG"; then
             echo "::error::Undefined references or citations."
