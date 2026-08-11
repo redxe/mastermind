@@ -1,0 +1,104 @@
+% !TeX root = ../../../main.tex
+\section{Ask the Research Question Before Drawing the Circuit}\label{sec:contract}
+
+\subsection{The bounded problem specification}
+
+A research question should be written as a contract before it is written as a circuit. One useful specification is
+\begin{equation}
+\mathcal{P}=\bigl(X,\mathcal{D},f,C,S,\epsilon,\delta,\Lambda,B_C\bigr),
+\label{eq:problem-tuple}
+\end{equation}
+where $X$ is the candidate or state space; $\mathcal{D}$ describes how inputs are accessed; $f$ is a predicate, score, likelihood, or operator; $C$ is the constraint set; $S$ records exploitable structure such as sparsity, symmetry, periodicity, locality, low rank, or topology; $\epsilon$ is the permitted numerical error; $\delta$ is the permitted failure probability; $\Lambda$ is the physical resource envelope; and $B_C$ is the strongest relevant classical baseline.
+
+The corresponding quantum interface can be written
+\begin{equation}
+\mathcal{Q}=\bigl(A,O_f,U,M\bigr),
+\label{eq:quantum-interface}
+\end{equation}
+where $A$ prepares the input state, $O_f$ implements the problem-dependent oracle or block encoding, $U$ produces the useful interference or dynamics, and $M$ defines the measured observable or sample. An abstract execution is therefore
+\begin{equation}
+\ket{0}\xrightarrow{A}\ket{\psi_{\mathrm{in}}}
+\xrightarrow{O_f}\ket{\psi_f}
+\xrightarrow{U}\ket{\psi_{\mathrm{out}}}
+\xrightarrow{M} y.
+\label{eq:pipeline}
+\end{equation}
+
+The tuples in \cref{eq:problem-tuple,eq:quantum-interface} are \emph{structured definitions}, not formal objects from which results are derived; their role is to force every assumption of an application claim onto the page. They prevent a common research failure: proving that $U$ is fast while quietly assuming that $A$ and $O_f$ are free, $M$ returns more information than measurement permits, and $B_C$ is a classroom algorithm from twenty years ago. A theorem can be correct under those assumptions. An application claim cannot hide them.
+
+\subsection{Algorithm 1: the Quantum Opportunity Audit}\label{sec:algorithm}
+
+Written as an executable procedure, the framework takes a candidate application and returns one of four decisions: \textsc{proceed}, \textsc{reframe}, \textsc{classical-only}, or \textsc{insufficient-evidence}. No numerical ``opportunity score'' is defined, deliberately: a gated sequence of falsifiable tests is more defensible than a weighted sum of judgments.
+
+\begin{thesisbox}[Algorithm 1: Quantum Opportunity Audit]
+\textbf{Inputs:} scientific question; target observable; tolerances $(\epsilon,\delta)$; deadline; hardware envelope $\Lambda_{\mathrm{HW}}$; best known classical workflow $B_C$.
+
+\textbf{Gate 1 --- Contract.} Instantiate every field of $\mathcal{P}$ \eqref{eq:problem-tuple}. \emph{Stop condition:} any field cannot be written down $\Rightarrow$ \textsc{insufficient-evidence}.
+
+\textbf{Gate 2 --- Mechanism.} Identify which mechanism in \cref{sec:mechanisms} the structure $S$ feeds, and the evidence class behind it (theorem, engineering approximation, or hypothesis). \emph{Stop condition:} no named mechanism $\Rightarrow$ \textsc{classical-only}.
+
+\textbf{Gate 3 --- Interface.} Cost $A$, $O_f$, $M$ in \cref{eq:quantum-interface}, including uncomputation. \emph{Stop condition:} interface costs consume the claimed advantage $\Rightarrow$ \textsc{reframe} (change output contract or access model) or \textsc{classical-only}.
+
+\textbf{Gate 4 --- Physics.} Run \cref{sec:resources}: error budget \eqref{eq:error-budget}, failure budget \eqref{eq:delta-union}, shot budget \eqref{eq:worstcase-shots} or \eqref{eq:neyman-shots}, noise triage \eqref{eq:nisq-screen} or fault-tolerant floor \eqref{eq:distance}. \emph{Stop condition:} no parameter regime fits $\Lambda_{\mathrm{HW}}$ and the deadline $\Rightarrow$ \textsc{classical-only} (revisit when hardware moves).
+
+\textbf{Gate 5 --- Opponent.} Apply the baseline protocol below and estimate the crossover \eqref{eq:crossover}. \emph{Stop condition:} no projected crossover inside the envelope $\Rightarrow$ \textsc{classical-only}.
+
+\textbf{Output:} the decision, the hybrid partition $\Pi^{*}$ (\cref{sec:hybrid}), and a predeclared evidence plan (\cref{sec:evidence}). \textsc{proceed} requires all five gates passed; the evidence plan then becomes binding.
+\end{thesisbox}
+
+Appendix~\ref{app:demo} executes this procedure end-to-end on a deliberately small, exactly solvable instance---where it correctly returns \textsc{classical-only}---and on the phase-encoding proposal of \cref{sec:audits}, which fails at Gate~3.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  node distance=7mm,
+  every node/.style={font=\small},
+  box/.style={rounded corners=1.5mm,draw=quantum,fill=mist,minimum width=0.84\textwidth,minimum height=9mm,align=center},
+  arrow/.style={-{Latex[length=2.2mm]},thick,draw=quantumdark}
+]
+\node[box] (contract) {\textbf{Scientific contract:} observable, scale, $\epsilon$, $\delta$, deadline, and validation};
+\node[box,below=of contract] (structure) {\textbf{Mechanism audit:} symmetry, spectrum, rare event, path interference, or native quantum dynamics};
+\node[box,below=of structure] (interface) {\textbf{Interface audit:} state preparation, reversible oracle, compact output, and uncomputation};
+\node[box,below=of interface] (budget) {\textbf{Physical audit:} topology, depth, errors, shots, error correction, classical latency, and baseline crossover};
+\draw[arrow] (contract) -- (structure);
+\draw[arrow] (structure) -- (interface);
+\draw[arrow] (interface) -- (budget);
+\end{tikzpicture}
+\caption{The order of operations for a credible quantum research program. A circuit is designed only after the scientific and interface contracts are explicit.}
+\label{fig:order}
+\end{figure}
+
+\subsection{Define the output before the state}
+
+The output contract is the fastest way to expose a weak proposal. Quantum algorithms are naturally good at returning a sample, a phase, an expectation value, a low-dimensional statistic, a property, or a candidate that can be verified classically. They are generally poor at returning every entry of a large vector. The Harrow--Hassidim--Lloyd algorithm is the canonical warning: it prepares a state proportional to the solution of a structured linear system and efficiently estimates appropriate observables; it does not print an $N$-component solution in polylogarithmic time \citep{harrow2009}. Reading $N$ classical numbers still costs at least order $N$.
+
+Before selecting an encoding, the researcher should answer four questions.
+
+\begin{enumerate}
+  \item What single scientific decision will be made from the output?
+  \item Is the desired output a scalar, sample, property, witness, ranked list, or full object?
+  \item How will correctness be checked when exact classical simulation is no longer available?
+  \item What level of approximation changes the scientific conclusion rather than merely the last decimal place?
+\end{enumerate}
+
+The last question matters because precision is a resource. An algorithm with complexity $O(1/\epsilon)$ can be theoretically superior to a classical $O(1/\epsilon^2)$ Monte Carlo method, but not necessarily at the $\epsilon$ required by the application once constants, state preparation, and fault tolerance are included. ``Faster in precision'' is not the same as ``faster by Friday.''
+
+\subsection{Define the classical opponent honestly}
+
+The baseline is not brute force unless brute force is what competent practitioners actually use. A quantum optimization method should meet mixed-integer programming, constraint programming, local search, decomposition, learned heuristics, and GPU implementations on the same instance distribution. A quantum simulation proposal should meet tensor networks, Monte Carlo, perturbation theory, reduced models, and high-performance computing in the regime where each is strongest. A quantum machine-learning claim should meet compressed, randomized, kernel, and quantum-inspired classical methods. Tang's dequantization of recommendation-system speedups remains an important engineering lesson: strong quantum input assumptions may grant a classical competitor more power as well \citep{tang2019,tang2021}.
+
+The comparison must fix the same problem size $N$, accuracy $\epsilon$, confidence $1-\delta$, hardware budget, preprocessing, and acceptable output. Only then does the desired inequality have meaning:
+\begin{equation}
+T_Q(N,\epsilon,\delta;\Lambda)+T_{\mathrm{interface}}
+<T_C(N,\epsilon,\delta;B_C).
+\label{eq:crossover}
+\end{equation}
+
+\paragraph{Baseline protocol.} ``Strongest relevant classical baseline'' becomes operational only when the comparison is specified in advance:
+\begin{enumerate}
+  \item name the classical implementations (solver, version, and configuration) that practitioners currently use for this problem class, including at least one state-of-the-art heuristic and one exact or certified method where feasible;
+  \item grant both sides identical preprocessing, instance distributions, and hardware budgets (including graphics processing units for the classical side);
+  \item give the classical side a tuning budget equal to the quantum side's calibration and transpilation effort;
+  \item compare at the same $(\epsilon,\delta)$ and the same output contract, reporting time-to-solution distributions rather than best cases;
+  \item state which costs are amortized on each side and over how many uses.
+\end{enumerate}

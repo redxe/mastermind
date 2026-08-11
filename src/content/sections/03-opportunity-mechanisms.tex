@@ -1,0 +1,66 @@
+% !TeX root = ../../../main.tex
+\section{Mechanisms That Illuminate a Quantum Opportunity}\label{sec:mechanisms}
+
+Quantum advantage is not a substance sprinkled over a difficult problem. It comes from a mechanism. The most useful early question is therefore: \emph{what mathematical feature would make interference do less work than classical enumeration, simulation, or sampling?}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.19\textwidth} >{\raggedright\arraybackslash}p{0.23\textwidth} >{\raggedright\arraybackslash}p{0.26\textwidth} >{\raggedright\arraybackslash}p{0.19\textwidth}}
+\caption{Problem structure, quantum mechanisms, and the questions that decide whether the match is real.}\label{tab:mechanisms}\\
+\toprule
+\textbf{Structure in the problem} & \textbf{Quantum mechanism} & \textbf{Useful output} & \textbf{Decisive caveat}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Structure in the problem} & \textbf{Quantum mechanism} & \textbf{Useful output} & \textbf{Decisive caveat}\\
+\midrule
+\endhead
+Periodicity or group symmetry & Quantum Fourier transform, phase estimation, hidden-subgroup methods & Period, eigenphase, symmetry label & Is the function available coherently and is the promised structure present?\\
+\addlinespace
+Rare marked states in an unstructured space & Amplitude amplification or Grover search & A marked candidate or amplified event & The predicate must be reversible; total cost is repeated oracle cost, not only $\sqrt{N}$.\\
+\addlinespace
+Mean, probability, risk, or integral & Amplitude estimation & Scalar estimate & Preparation and reflections must be cheap enough; low-depth variants trade speedup for robustness.\\
+\addlinespace
+Spectral property of an operator & Phase estimation, qubitization, quantum signal processing & Energy, eigenphase, response function & Initial-state overlap, block encoding, precision, and coherent depth often dominate.\\
+\addlinespace
+Sparse, structured, well-conditioned linear system & Quantum linear-system algorithms or quantum singular value transformation (QSVT) & State or observable associated with the solution & Condition number, input oracle, and output tomography can erase the headline speedup.\\
+\addlinespace
+Local transitions, hitting, or collision structure & Quantum walks & Hitting time, collision, sampled endpoint & The graph access model and setup cost must be physically implementable.\\
+\addlinespace
+Native quantum dynamics & Digital or analog quantum simulation & Local observables, spectra, scattering data, correlation functions & State preparation, truncation, and validation replace classical data loading as the main risks.\\
+\addlinespace
+Constrained objective with useful geometry & Quantum approximate optimization algorithm (QAOA), alternating operators, annealing & Good feasible candidate or distribution & A QUBO is not evidence of advantage; mixers, embedding, optimizer cost, and classical heuristics matter.\\
+\addlinespace
+Classically hard output distribution & Sampling and interference experiments & Samples, moments, or a certified statistic & Practical value and scalable verification must be demonstrated separately from sampling hardness.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Interference as the operational design lever}
+
+Superposition enlarges the state space. Entanglement creates correlations unavailable to product states. Neither fact alone tells us why an answer becomes easier, and the question of which resource ``powers'' quantum speedups is genuinely model-dependent: coherence, entanglement, contextuality, and magic each play the leading role in different formal accounts. This paper makes a narrower, operational claim: in gate-model algorithm \emph{design}, interference is where selectivity is engineered. The design task is to assign phases and amplitudes so that computational paths supporting the desired global property reinforce one another while irrelevant paths cancel.
+
+For a reversible Boolean predicate $\chi(f(x))$, the basic compute--mark--uncompute pattern is
+\begin{equation}
+\ket{x}\ket{0}
+\longrightarrow \ket{x}\ket{f(x)}
+\longrightarrow (-1)^{\chi(f(x))}\ket{x}\ket{f(x)}
+\longrightarrow (-1)^{\chi(f(x))}\ket{x}\ket{0}.
+\label{eq:uncompute}
+\end{equation}
+The final arrow is not housekeeping. Garbage left entangled with $x$ can reveal which path was taken and destroy the interference the algorithm needed. Reversibility turns ordinary software concerns into algorithmic resources: temporary storage becomes ancilla count; irreversible updates become additional arithmetic; dynamic branches become controlled operations; and memory access becomes a circuit.
+
+\subsection{Five gates before a research proposal earns a score}
+
+It is tempting to assign every candidate a weighted ``quantum opportunity score.'' That creates false precision. A better process uses five gates. A proposal proceeds only if each gate has an explicit answer.
+
+\begin{enumerate}
+  \item \textbf{Mechanism gate.} Which known quantum primitive exploits a named property of the problem?
+  \item \textbf{Access gate.} How are data, coefficients, Hamiltonian terms, or graph neighborhoods supplied coherently, and at what cost?
+  \item \textbf{Output gate.} Is the deliverable compact enough to measure without reconstructing the whole state?
+  \item \textbf{Physical gate.} Does the compiled computation fit the qubits, topology, error budget, coherence, throughput, and wall-clock bound?
+  \item \textbf{Evidence gate.} Can the claim be falsified against strong classical baselines and validated beyond the classically simulable regime?
+\end{enumerate}
+
+If the access or output gate fails, a beautiful internal circuit is usually irrelevant. If the evidence gate fails, the project may still be good physics, compiler research, or device science, but it should not be sold as an application advantage.
+
+\begin{warningbox}[Signals that are not sufficient]
+The following facts do not, by themselves, identify a quantum opportunity: the dataset is large; the problem is NP-hard; a qubit can encode the variables; the state is entangled; the objective can be written as a QUBO; a toy circuit beats brute force; or the Hilbert space has dimension $2^n$. Hardness is a reason to look for structure. It is not the structure.
+\end{warningbox}

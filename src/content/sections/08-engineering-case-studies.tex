@@ -1,0 +1,63 @@
+% !TeX root = ../../../main.tex
+\section{Illustrative Engineering Audits}\label{sec:audits}
+
+The two audits in this section apply the problem contract to proposed framings. They are audits, not completed case studies: no hardware execution, full formulation, or benchmarked baseline is reported here. A small, fully reproducible execution of the audit procedure---including a quantitative version of this section's phase-encoding rejection---appears in \cref{app:demo}; this section closes by specifying the hardware-scale demonstration that remains open.
+
+\subsection{DNA in phase: representation is not yet a biological mechanism}
+
+Suppose the four DNA bases are mapped to four phases on one qubit,
+\begin{equation}
+\ket{\psi_b}=\frac{1}{\sqrt{2}}
+\left(\ket{0}+e^{i\phi_b}\ket{1}\right),
+\qquad
+\phi_b\in\left\{0,\frac{\pi}{2},\pi,\frac{3\pi}{2}\right\}.
+\label{eq:dna-phase}
+\end{equation}
+The adjacent states are not orthogonal:
+\begin{equation}
+\braket{\psi_b}{\psi_c}
+=\frac{1+e^{i(\phi_c-\phi_b)}}{2},
+\qquad
+\left|\braket{\psi_b}{\psi_c}\right|=\frac{1}{\sqrt{2}}
+\end{equation}
+for a quarter-turn separation. They cannot be perfectly distinguished in one measurement. Two distinct phases matter here and must not be conflated. A \emph{global} phase multiplying an entire state, $e^{i\alpha}\ket{\psi}$, is unobservable: no measurement distinguishes it. The $\phi_b$ in \cref{eq:dna-phase} are \emph{relative} phases between the $\ket{0}$ and $\ket{1}$ components and are physically meaningful---but only through interference, not through direct readout. And regardless of phase bookkeeping, four exact classical symbols require at least a four-dimensional orthogonal space, such as two qubits or a ququart.
+
+That does not make phase encoding useless. It changes the question. A sequence
+\begin{equation}
+\ket{\Psi_S}=\frac{1}{\sqrt{N}}
+\sum_{j=0}^{N-1}e^{i\phi(S_j)}\ket{j}
+\label{eq:phase-sequence}
+\end{equation}
+carries the base identities as relative phases across position states $\ket{j}$, which interference can access. Applying the quantum Fourier transform and measuring yields frequency $k$ with probability
+\begin{equation}
+\Pr[k]=\frac{1}{N^{2}}\left|\sum_{j=0}^{N-1}e^{i\phi(S_j)}e^{-2\pi i jk/N}\right|^{2},
+\end{equation}
+so the device samples from the power spectrum of the phase sequence: strong periodicities appear as high-probability frequencies, and each run returns one sample, not the spectrum. A reversible motif score $s(j)$ may instead support a predicate $\chi(j)=[s(j)\geq\tau]$ and amplitude amplification. But the complete cost includes sequence access, score computation, comparison, phase marking, uncomputation, and repetition: preparing \cref{eq:phase-sequence} from classical sequence data costs $O(N)$ operations, and a classical fast Fourier transform (FFT) returns the \emph{entire} spectrum in $O(N\log N)$ with small constants, so the sampling picture alone does not win.
+% TODO: add a quantitative cost comparison (state preparation vs. FFT/suffix-based motif methods on realistic genome lengths) with citations to the quantum-bioinformatics literature; do not cite works not yet verified.
+
+The more promising abstraction may be relational rather than symbolic---this is hypothesis generation, not a result. Folding, regulatory interaction, mutation pathways, and molecular geometry naturally produce graphs, Hamiltonians, local constraints, and energy landscapes. The researcher's job is to find the decisive observable: a spectral gap, transition amplitude, rare motif probability, or local correlation. The biological label is context. The operator is the algorithm.
+
+\subsection{Scheduling and the QUBO temptation: a warning example}
+
+This audit is included as a \emph{warning}, not as evidence that the framework improves scheduling: no full formulation or benchmark is developed here. For a scheduling problem, binary variables $x_{s,t,k}$ may indicate that satellite, instrument, or task $s$ is assigned at time $t$ under mode $k$. An objective can combine scientific reward, fuel, lateness, conflicts, and constraint penalties. Writing this as a QUBO makes it executable on some quantum platforms, but it may introduce auxiliary variables, dense couplings, poorly scaled penalties, and long embedding chains.
+% TODO: develop the full QUBO/constraint formulation for a concrete instance class, with penalty-weight scaling analysis, before any performance discussion.
+
+A stronger workflow begins classically: eliminate impossible windows, merge equivalent states, decompose weakly coupled regions, generate feasible warm starts, and identify the residual choice that remains combinatorially expensive. The QPU then explores a structured neighborhood or feasible subspace, possibly with a constraint-preserving mixer, while the CPU repairs, certifies, and coordinates the global schedule. Quantum performance must be compared with CP-SAT (Google's constraint-programming/SAT solver), mixed-integer programming, local search, and domain heuristics using time-to-target and solution quality. Studies of the quantum approximate optimization algorithm (QAOA) already show that sampling frequency, circuit depth, and baseline choice determine the putative crossover \citep{lykhov2023}.
+
+A practical intermediate artifact is an algorithm-opportunity and provenance record: each proposed quantum kernel records the claimed mechanism, access model, oracle cost, output contract, precision, logical resources, physical assumptions, noise sensitivity, classical baseline, verification method, and evidence status. This turns enthusiasm into an auditable engineering object.
+% TODO: if the Ariadion scheduling system is to be cited as a concrete host for such a record, add a versioned artifact citation (repository URL + commit/version); otherwise leave it out.
+
+\subsection{Toward an end-to-end demonstration}
+
+The framework's own standard demands one completed pass. The demonstration that would qualify---deliberately small---is:
+
+\begin{enumerate}
+  \item \textbf{Problem contract:} a fully instantiated $\mathcal{P}$ for one bounded instance class (for example, ground-state energy of a small molecular or lattice Hamiltonian to chemical-accuracy-scaled $\epsilon$, $\delta=0.05$). \emph{TODO: select and freeze the instance.}
+  \item \textbf{Encoding and circuit:} explicit mapping, ansatz or algorithm choice, and compiled circuits for a named device with its calibration snapshot. \emph{TODO: compile and archive.}
+  \item \textbf{Resource calculation:} the full \cref{sec:resources} workflow---error budget, grouped shot budget with measured variances, noise triage, and a fault-tolerant estimate from an established resource estimator. \emph{TODO: execute estimator run.}
+  \item \textbf{Execution and measurement:} hardware or high-fidelity-simulator runs with predeclared analysis. \emph{TODO: run and archive raw data.}
+  \item \textbf{Classical baseline:} the protocol of \cref{sec:contract} against state-of-the-art classical solvers on identical instances. \emph{TODO: run baselines.}
+  \item \textbf{Crossover decision:} the resulting go/no-go call with the complete ledger \eqref{eq:complete-ledger}, published with code and manifest. \emph{TODO: publish artifact.}
+\end{enumerate}
+
+No step above is reported as done at hardware scale in this paper; \cref{app:demo} executes the procedure only on a small exactly solvable instance. Until the hardware-scale artifact exists, the framework should be read as a proposed discipline, and this section as its falsifiable promissory note.

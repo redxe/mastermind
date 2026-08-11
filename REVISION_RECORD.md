@@ -1,0 +1,52 @@
+# Revision record — reviewer-response pass (2026-08-11)
+
+> **Second pass (same date):** an independent adversarial audit (SECOND_REVIEW_AUDIT.md) found one blocking mathematical error that the first pass missed — eq:hoeffding was wrong by a factor of 4 for observables in $[-1,1]$ (now corrected to $N \ge 2\ln(2/\delta)/\epsilon^2$). All Section 4 numbers are now machine-verified by `scripts/verify_calculations.py`; a reproducible end-to-end execution of the audit procedure (4-qubit TFIM, decision `classical-only`) plus a quantitative DNA-phase-encoding rejection case was added as Appendix C, produced by `scripts/demo_tfim_audit.py`. Algorithm 1 (gated decision procedure with outputs proceed/reframe/classical-only/insufficient-evidence) replaced the prose checklist in §2; a claim–evidence matrix was added to §13; a computational-model scope paragraph (gate-model only) was added to §1; the abstract's "applied to" overclaim was corrected to "used to audit"; Hoeffding-vs-Neyman guarantee semantics, pilot-variance cost, rounding, and the 2 ms/shot assumption are now explicit. Four bibliography entries were corrected against fetched sources (beverland2022 author name, vandam2024 title/venue, brunet2023 published version, nqiworkshop2025 authors/title); see SOURCE_VERIFICATION.md.
+>
+> **Still unproven:** hardware-scale end-to-end demonstration (§8 TODO protocol); established resource-estimator run for the FT example (§4 TODO); DNA/scheduling literature citations (§8 TODOs); bounded Schwinger-model instantiation (§9 TODO); ORCID/artifact URL (title page TODO); field-by-field spot-check of canonical bib entries (SOURCE_VERIFICATION.md TODO).
+
+Genre decision: the manuscript is explicitly reframed as a **perspective and engineering-framework paper**. No new speedup theorem is claimed.
+
+Legend: ✅ done in this pass · 🔶 partially done (TODO marker inserted in source) · ⬜ requires new research/execution (TODO marker inserted).
+
+## Priority 0
+
+| # | Criticism | Affected files | Correction | Evidence required | Status |
+|---|---|---|---|---|---|
+| 1 | Genre mismatch | 01-introduction | Added "Contributions and scope" subsection declaring perspective/framework genre; no speedup theorem claimed | none | ✅ |
+| 2 | Framework never applied end-to-end | 08-audits | Added "Toward an end-to-end demonstration" protocol with explicit TODOs for execution, code, and manifest | executed demo + artifacts | 🔶 |
+| 3 | Decorative notation | 02-problem-contract | 𝒫, 𝒬, Π* explicitly labeled structured definitions, not optimization results; added step-by-step audit procedure with inputs/outputs/acceptance criteria | none | ✅ |
+| 4 | Shot calculation insufficient | 04-physical-resource-calculation | Rewrote around estimator Ĥ=Σ c_j⟨P_j⟩: grouped estimator variance, union-bound δ allocation, worst-case Hoeffding vs. variance-aware allocation; runtime recomputed for both | measured variances for real instance | ✅ |
+| 5 | Time ledger inconsistent | 13-discussion | Replaced with one-time / per-job / per-circuit / per-shot / per-iteration ledger; state preparation repeats per shot; amortizable terms identified; all symbols defined | none | ✅ |
+| 6 | Error budget imposes no budget | 04 | Now ε_achieved ≤ Σ ε_i ≤ ε_target with explicit allocation; failure probabilities via explicit union bound Σ δ_i ≤ δ_target; correlated/quadrature caveats added | none | ✅ |
+| 7 | P₀ mistaken for fidelity | 04 | Renamed "toy triage model"; assumed stochastic Pauli channel stated; RB-infidelity substitution and coherence double-counting caveats added; channel-level simulation recommended | none | ✅ |
+| 8 | FT example is memory-only floor | 04 | 881k labeled idealized memory-only floor; c_d, τ_L, D_dep defined; sensitivity discussion added; TODO for established resource estimator run | estimator run | 🔶 |
+
+## Priority 1
+
+| # | Criticism | Affected files | Correction | Status |
+|---|---|---|---|---|
+| 9 | No related work | new 01b-related-work | Added related-work section + comparison table (selective review, stated as such) | ✅ |
+| 10 | Scope too broad | 01, 08, 10, 11 | Central claim scoped; domains labeled illustrative audits; history compressed | ✅ |
+| 11 | Case studies are vignettes | 08 | Section renamed "Illustrative Engineering Audits"; framing sentence added | ✅ |
+| 12 | DNA phase ambiguity | 08 | Relative vs. global phase distinguished; QFT output and costs stated; classical comparison retained; literature TODO | 🔶 |
+| 13 | DNA drift into association | 08 | Speculative paragraph shortened and labeled future hypothesis generation | ✅ |
+| 14 | Scheduling lacks formulation | 08 | Reframed as warning example, not case study; full model marked TODO | 🔶 |
+| 15 | Ariadion self-promotional | 08 | Removed from central narrative; retained as one-sentence artifact note with TODO for version/commit citation | 🔶 |
+| 16 | HEP too broad | 09 | Bounded-model (Schwinger-type) demonstration marked TODO; claims scoped | 🔶 |
+| 17 | GW inner product underspecified | 10 | Replaced with noise-weighted inner product using detector PSD; assumptions listed | ✅ |
+| 18 | Sensing scope confusion | 10 | Explicit statement: sensing/communication outside the processor framework; separate resource contract listed | ✅ |
+| 19 | Astronomy ranking overclaims | 10 | Rewritten as provisional author assessment with stated criteria and horizon | ✅ |
+| 20 | Baseline not operational | 02 | Added baseline protocol checklist (implementations, preprocessing, hardware, tuning budget, accuracy, amortization) | ✅ |
+
+## Priority 2
+
+| Item | Status |
+|---|---|
+| "Interference is the working resource" softened to operational-mechanism claim (model-dependent resources: coherence, entanglement, contextuality, magic) | ✅ |
+| "Quantum states compress descriptions" made precise | ✅ |
+| Acronyms defined on first use (QUBO, QAOA, QSVT, VQE, QRAM, QEC, HEP, CP-SAT, MIP, SELECT/PREPARE, TTS, PSD, RB, FFT) | ✅ |
+| Consolidated limitations section (new 13b-limitations) | ✅ |
+| BibTeX capitalization braces (RSA, NISQ, Pauli, Nobel, QAOA-related) | ✅ |
+| Title-page footer replaced with version/contact line; ORCID/artifact URL TODO | 🔶 |
+| History compressed; Feynman drawer kept; Pauli-effect folklore trimmed | ✅ |
+| Rhetoric reduced ("public-relations inconvenience", "not marketing", "brutally demanding"); "faster by Friday" and drawer metaphor kept | ✅ |

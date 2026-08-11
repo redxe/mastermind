@@ -1,0 +1,41 @@
+% !TeX root = ../../../main.tex
+\section{The Experimental Program: Make the Claim Falsifiable}\label{sec:evidence}
+
+A quantum algorithm paper becomes more valuable when the experiment is designed to prove the authors wrong. The following protocol treats validation as part of the algorithm.
+
+\subsection{Predeclare the success condition}
+
+Before running the device, record the primary observable, error tolerance, confidence level, time limit, resource accounting rules, baseline implementations, and stopping rule. If the goal is solution quality, specify the approximation ratio or constraint violation. If the goal is a physical observable, specify the acceptable total error and how model error will be separated from hardware error. If the goal is runtime, include preprocessing, queueing assumptions, repeated shots, calibration, mitigation, and classical postprocessing.
+
+Benchmark suites improve comparability only when the abstraction level and compilation assumptions are visible \citep{quetschlich2023}. The result should be reproducible from a manifest containing the device identifier, calibration snapshot, coupling map, native gate set, compiler and optimization levels, seeds, shot allocation, mitigation settings, raw counts, classical hardware, code commit, and wall-clock timestamps.
+
+\subsection{Use an instance ladder}
+
+One large instance teaches surprisingly little. A useful ladder contains:
+
+\begin{enumerate}
+  \item \textbf{Exact instances}, small enough for full-state simulation and symbolic checks.
+  \item \textbf{Mechanism instances}, constructed so the proposed symmetry, periodicity, gap, or rare-event structure can be turned on and off.
+  \item \textbf{Application instances}, drawn from the real distribution without selecting only favorable examples.
+  \item \textbf{Stress instances}, targeting poor conditioning, small spectral gaps, dense constraints, adversarial noise sensitivity, or weak initial overlap.
+  \item \textbf{Crossover instances}, large enough to test scaling but still comparable with the best available classical method.
+\end{enumerate}
+
+The mechanism-off control is especially important. If performance does not change when the alleged quantum structure is removed, the proposed explanation is probably wrong even if the benchmark score is good.
+
+\subsection{Separate four kinds of evidence}
+
+The experiment should not collapse correctness, scaling, utility, and advantage into one plot.
+
+\begin{itemize}
+  \item \textbf{Correctness evidence}: agreement with exact values, conserved quantities, symmetries, or certified bounds.
+  \item \textbf{Mechanism evidence}: response to ablations that remove the feature the quantum algorithm claims to exploit.
+  \item \textbf{Scaling evidence}: fitted resource growth with uncertainty across instance families, including compiler and sampling costs.
+  \item \textbf{Advantage evidence}: end-to-end comparison with a strong classical baseline at matched accuracy and confidence.
+\end{itemize}
+
+Quantum certification becomes harder when classical simulation fails, so scalable checks must be designed early: conserved charges, variational upper bounds, local consistency conditions, cross-entropy-style statistics where appropriate, trap circuits, interactive proofs, or agreement among independent formulations \citep{eisert2020}. ``The simulator could not run it'' is evidence of size, not correctness.
+
+\subsection{Treat drift as an experimental variable}
+
+Run interleaved controls, randomize execution order, repeat across calibration windows, and report between-window variance. A device can improve during one part of a benchmark and worsen during another. Without interleaving, time becomes an unacknowledged confounder. Likewise, error mitigation should be trained and evaluated on separated circuits when possible; tuning on the final answer converts validation into fitting.

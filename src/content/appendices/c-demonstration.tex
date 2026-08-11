@@ -1,0 +1,24 @@
+% !TeX root = ../../../main.tex
+\section{A Reproducible Execution of the Audit Procedure}\label{app:demo}
+
+This appendix reports one complete, deliberately small execution of Algorithm~1 (\cref{sec:algorithm}) and one quantitative rejection case. Both are produced by \texttt{scripts/demo\_tfim\_audit.py} in the paper's artifact (Python~3.11, NumPy, fixed seed 20260811); \texttt{scripts/verify\_calculations.py} reproduces every number quoted in \cref{sec:resources}. Everything below is \emph{classical simulation of an ideal or toy-noise device}: it validates the audit procedure and the shot-allocation mathematics, and must not be read as hardware evidence or as an advantage claim. The instance is chosen so that the honest audit outcome is \textsc{classical-only}---a framework that cannot reject its own demonstration instance would not be worth trusting.
+
+\subsection{Acceptance audit instance: 4-qubit transverse-field Ising model}
+
+\textbf{Gate 1 (contract).} Estimate the ground-state energy $E_0$ of the open-chain transverse-field Ising model $H=-J\sum_{i=1}^{3}Z_iZ_{i+1}-h\sum_{i=1}^{4}X_i$ with $J=h=1$, to additive error $\epsilon=0.05$ with joint failure probability $\delta=0.05$. Exact diagonalization of the $16\times16$ matrix gives $E_0=-4.758770$, which serves as ground truth and as the classical baseline.
+
+\textbf{Gates 2--3 (mechanism, interface).} The mechanism is spectral (ground-state energy of a local Hamiltonian); the interface is unproblematic at this size: the state is prepared exactly in simulation, and the observable decomposes into $G=2$ commuting measurement groups---all $ZZ$ terms (weight $a_Z=3$) and all $X$ terms (weight $a_X=4$), $\sum_g a_g=7$. The estimator identity $\hat H=\hat\mu_Z+\hat\mu_X$ was checked exactly: $\mu_Z+\mu_X=E_0$ to machine precision, with true group standard deviations $\sigma_Z=\sigma_X=1.603$, both well below their worst-case bounds $a_g$.
+
+\textbf{Gate 4 (physics).} The two allocations of \cref{sec:resources} give, at $(\epsilon,\delta)=(0.05,0.05)$:
+worst-case \eqref{eq:worstcase-shots}: $N_Z=N_X=171{,}776$, total $343{,}552$ shots;
+variance-aware \eqref{eq:neyman-shots} with the true $\sigma_g$: total $15{,}788$ shots---a $22\times$ reduction, consistent with $\sigma_g<a_g$. Sampling from the exact ground-state distributions over 400 independent trials gave empirical coverage $\Pr[|\hat H-E_0|\leq\epsilon]=1.000$ for the worst-case allocation and $0.938$ for the Neyman allocation against the $0.95$ target: the bound over-delivers, the asymptotic approximation lands near---but not provably above---its nominal confidence. This is the guarantee distinction of \cref{sec:resources} made empirical. A toy screen \eqref{eq:nisq-screen} for a plausible hardware ansatz (24 one-qubit gates, 9 two-qubit gates, 4 measurements at representative error rates) gives $P_0=0.887$: the instance would fit comfortably on hardware.
+
+\textbf{Gate 5 (opponent) and decision.} The classical baseline solves the instance exactly in microseconds at every accuracy. No regime exists in which the quantum route wins. \emph{Decision: \textsc{classical-only}.} All five gates executed; the procedure produced a defensible rejection with every intermediate quantity checkable against exact values.
+
+\subsection{Rejection case: DNA phase encoding at Gate 3}
+
+The phase-encoding proposal of \cref{sec:audits} was audited quantitatively at its most favorable operating point: a strongly periodic sequence ($N=4096$ bases, period-16 motif), where quantum Fourier transform (QFT) sampling has a sharp peak to find. The simulation confirms the mechanism works as derived---with $10^4$ samples from the exact QFT output distribution, the dominant frequency $k=2048$ was correctly identified. It also confirms the cost structure that kills the proposal: preparing \cref{eq:phase-sequence} from classical data costs $\Theta(N)$ per shot, so the $10^4$ shots imply roughly $4.1\times10^{7}$ loading operations, while a classical fast Fourier transform returns the \emph{complete} spectrum once for about $N\log_2 N\approx4.9\times10^{4}$ operations. The route fails Gate~3 under the stated access model even when Gate~2 succeeds. \emph{Decision: \textsc{classical-only}}, unless the access model changes (for example, data generated coherently rather than loaded).
+
+\subsection{Reproducibility}
+
+Both scripts run in seconds on a laptop with only NumPy installed, use fixed seeds, and print every number quoted above. What this appendix does \emph{not} establish: hardware behavior, performance at scale, or the framework's value on instances where the decision is genuinely uncertain. That harder demonstration is specified, with TODO markers, in \cref{sec:audits}.

@@ -1,0 +1,44 @@
+% !TeX root = ../../../main.tex
+\section{Where the Quantum Side Ends: Designing the Hybrid Boundary}\label{sec:hybrid}
+
+The quantum--classical boundary is not a philosophical line. It is a costed interface. Let a partition $\Pi$ assign subroutines to the classical processor, QPU, or shared workflow. A reasonable design objective is
+\begin{equation}
+\Pi^*=\arg\min_{\Pi}
+\left[
+T_C(\Pi)+T_{\mathrm{transfer}}(\Pi)+T_Q(\Pi)
+\right]
+\label{eq:partition}
+\end{equation}
+subject to bounds on total error, qubits, coherence, memory, success probability, energy, and deadline. Transfer includes data encoding, circuit submission, measurement, serialization, latency, and reinitialization. If a small quantum kernel must be called millions of times through a slow interface, its asymptotic elegance may become a systems failure.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{A practical partition rule for hybrid algorithms.}
+\label{tab:hybrid}
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{0.20\textwidth} X X}
+\toprule
+Facet & Prefer the classical side & Consider the quantum side\\
+\midrule
+Data & Large explicit datasets, parsing, cleaning, sparse indexing, branching & Quantum-native states or compact generative preparation circuits\\
+Control & Irregular logic, dynamic memory, high-precision bookkeeping & Coherent control that is essential to interference\\
+Computation & Cheap arithmetic, preprocessing, decomposition, warm starts & Spectral transforms, amplitude amplification, coherent evolution\\
+Constraints & Presolve, propagation, cutting planes, feasibility repair & Constraint-preserving mixers or symmetry sectors that remove invalid states\\
+Optimization & Global orchestration, stopping rules, surrogate models & Sampling or expectation evaluation only when it adds nonclassical information\\
+Output & Full vectors, reports, databases, provenance & Compact observables, samples, phases, witnesses, candidate solutions\\
+Validation & Baselines, confidence intervals, residuals, cross-checks & Conserved quantities or quantum tests unavailable classically\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{The reusable-kernel rule}
+
+The QPU should receive the smallest kernel that (1) requires coherence, (2) is expensive classically, (3) can be invoked without repeatedly loading a giant state, and (4) returns a compact object. Classical preprocessing should expose structure rather than merely shrink data. Examples include finding symmetry sectors, eliminating fixed variables, constructing a sparse block encoding, preparing a warm start, grouping observables, or decomposing a graph into neighborhoods.
+
+The strongest hybrid algorithms often do not divide the original problem in half. They change the problem so that a narrow quantum operation becomes meaningful. The quantum step may estimate a phase, generate a distribution, evaluate a correlation, or search a residual space after classical presolve. Everything else remains classical because classical computers are excellent at memory, branching, precision, and control.
+
+\subsection{Variational algorithms: useful laboratory, dangerous default}
+
+Variational quantum algorithms place state preparation and expectation estimation on the QPU while a classical optimizer updates parameters \citep{peruzzo2014,cerezo2021}. This is experimentally convenient, but convenience is not a mechanism. Expressive ansatze can exhibit exponentially small gradients, while noise can create its own barren plateaus \citep{mcclean2018,wang2021}. The optimizer may spend more time estimating a flat landscape than exploring it.
+
+A variational design should therefore justify the ansatz from problem structure, preserve known symmetries, measure gradient signal-to-noise, report the number of objective calls, and compare against a classical ansatz with similar inductive bias. If the circuit is classically simulable because it is shallow or weakly entangling, that may be a good engineering property during development, but it weakens an advantage claim. If it is deep enough to resist simulation, trainability and noise become harder. The tension is real and must be addressed in the design, not deferred.

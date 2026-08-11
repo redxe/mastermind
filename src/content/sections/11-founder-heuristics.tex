@@ -1,0 +1,36 @@
+% !TeX root = ../../../main.tex
+\section{What the Founders Still Teach the Algorithm Engineer}
+
+The founders of quantum mechanics did not hand us a software-development method, but their habits map surprisingly well onto one.
+
+\subsection{Planck: let the anomaly set the representation}
+
+Planck's quantum was introduced because the classical model failed against the spectrum. The engineering lesson is to begin from a measured obstruction, not from a fashionable representation. A research proposal should identify the classical bottleneck empirically and mathematically before choosing qubits. If the anomaly disappears under a better classical approximation, that is progress.
+
+\subsection{Einstein: use the smallest thought experiment that can kill the idea}
+
+Einstein's best arguments isolated a conflict in a deliberately simple setting. Quantum algorithm design benefits from the same cruelty. Construct the smallest instance where the alleged advantage should appear and an adjacent instance where its mechanism is absent. If the method cannot distinguish them, scale will not rescue the explanation.
+
+\subsection{Heisenberg: begin with observables}
+
+Heisenberg abandoned classical electron orbits that could not be observed and built mechanics from transition quantities. The direct engineering translation is output-first design. Do not begin by asking how to represent the entire hidden state. Begin with the quantity the experiment can measure and the decision it must support. The historical development from matrix mechanics to wave mechanics also shows that mathematically different representations can describe the same physics \citep{nobelhistory2000}. Choose the representation that makes the resource structure visible.
+
+\subsection{Schr\"odinger: solve the eigenvalue problem, but do not worship the wavefunction}
+
+Schr\"odinger recognized that spectra could be formulated as an eigenvalue problem. Modern phase estimation, the variational quantum eigensolver (VQE), qubitization, and QSVT continue to exploit spectral structure. Yet a state vector is not automatically an accessible dataset. The useful object is often an eigenvalue, matrix element, or correlation. Representation and readout must remain connected.
+
+\subsection{Born: probability is not an implementation defect}
+
+Born's statistical interpretation made probability fundamental rather than an embarrassment \citep{born1954}. For the algorithm engineer, that means shot counts, confidence intervals, posterior uncertainty, and stopping rules belong in the design from the beginning. A result without uncertainty is not made more scientific by having come from a quantum device.
+
+\subsection{Pauli: constraints create the valid world}
+
+Pauli's exclusion principle is a structural restriction with enormous physical consequences \citep{pauli1946}. Algorithmically, constraints are not always penalties attached to an objective. They can define the state space itself. Fermionic encodings, particle-number sectors, gauge-invariant bases, and constraint-preserving mixers all benefit from never visiting impossible states.
+
+The ``Pauli effect''---laboratory folklore that equipment failed when Pauli arrived \citep{paulieffect}---survives as one practical reminder: the theorist's arrival changes the laboratory. New calibration, compiler settings, cables, and expectations can change the measured system, so record interventions and randomize run order.
+
+\subsection{Feynman: open the drawer}
+
+At Los Alamos, Feynman warned that secrets stored behind padlocks were insecure. Edward Teller replied that his important papers were safer in a locked desk. During the meeting, Feynman slipped out and discovered that the papers could simply be pulled through the back. He emptied the drawer and returned before Teller opened it \citep{feynmanlosalamos}. The analogy to quantum algorithms is almost too convenient.
+
+The impressive lock is the asymptotic theorem. The open back is the data-loading assumption, oracle cost, routing overhead, measurement burden, or weak baseline. The correct response is not to admire the lock more carefully. It is to pull on the paper. Feynman's later challenge to simulate quantum physics with quantum rules came from the same instinct: inspect what the formal model is actually allowed to do, then build around the physical obstruction \citep{feynman1982}.

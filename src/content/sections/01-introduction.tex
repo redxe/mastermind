@@ -1,0 +1,27 @@
+% !TeX root = ../../../main.tex
+\section{Introduction: A Quantum Algorithm Is Not an Encoding}
+
+Quantum computing has a branding problem. The qubit is too often presented as a very small, very expensive parallel processor: load many possibilities into superposition, ``try them all,'' and measure the answer. That explanation is attractive, memorable, and wrong in exactly the place where engineering begins. Measurement does not reveal every branch. Most amplitudes are discarded. A useful algorithm must arrange interference so that the answer we need becomes statistically visible while the information we do not need cancels itself out.
+
+This distinction is more than academic. If I encode a million records into amplitudes, I have not solved a million-record problem. I have created a state-preparation obligation. If I map a schedule into a quadratic unconstrained binary optimization (QUBO) problem, I have not established a quantum advantage. I have created an embedding, penalty, and benchmarking obligation. If I place the letters A, C, G, and T at four phases of a qubit, I have not made DNA quantum. I have created four nonorthogonal states and a measurement problem. The useful work begins after the representation is questioned.
+
+The right starting point is to think about everything as a system instead of as individuals. The data, oracle, circuit, compiler, physical topology, noise, measurement, decoder, classical optimizer, and validation method are not separate decorations around an algorithm. They are the algorithm as it will exist in the world. The research question is therefore not ``Can this be put on qubits?'' Nearly anything finite can. The research question is:
+
+\begin{thesisbox}[The question that matters]
+Can the expensive part of this problem be converted into a coherent, reversible, and physically executable transformation whose useful output can be estimated more cheaply, at the required accuracy and confidence, than the best complete classical workflow?
+\end{thesisbox}
+
+This paper develops a calculative answer. It draws on the established mechanisms behind factoring, search, amplitude estimation, quantum linear algebra, Hamiltonian simulation, and variational methods \citep{shor1997,grover1997,brassard2002,harrow2009,gilyen2019,low2019,cerezo2021}. It also treats their fine print as first-class mathematics: input access, condition numbers, oracle construction, output size, circuit synthesis, device noise, repeated shots, error correction, and the moving frontier of classical algorithms \citep{aaronson2015,tang2019,tang2021,vandam2024}. The purpose is neither to advertise quantum computing nor to bury it beneath caveats. The purpose is to find the portion that survives them.
+
+\subsection{Contributions and scope}
+
+This is a \emph{perspective and framework} paper. It proves no new speedup theorem, reports no new experimental data, and claims no algorithmic advantage. Its contributions are:
+\begin{enumerate}
+  \item a structured problem contract ($\mathcal{P}$, $\mathcal{Q}$, and the hybrid partition $\Pi^{*}$) that makes the assumptions of an application claim explicit and auditable (\cref{sec:contract,sec:hybrid});
+  \item a physical resource-calculation discipline connecting error budgets, shot counts, noise triage, and fault-tolerant floors into one workflow, with worked screening examples (\cref{sec:resources});
+  \item an evidence protocol for claims that outrun exact classical verification (\cref{sec:evidence});
+  \item illustrative engineering audits that apply the contract to proposals in genomics, scheduling, high-energy physics, and astronomy---these are audits of framings, not completed case studies (\cref{sec:audits,sec:hep,sec:astro}).
+\end{enumerate}
+The framework is prescriptive rather than derived: its value must ultimately be established by end-to-end application. Appendix~\ref{app:demo} supplies a first, deliberately small, fully reproducible execution of the audit procedure, and \cref{sec:audits} specifies the hardware-scale demonstration that remains to be executed. The intended readers are researchers and engineers deciding whether, and how, to spend quantum hardware time on a scientific question.
+
+\paragraph{Computational model and scope.} The framework's resource calculations target \emph{gate-model} quantum computation, noisy and fault-tolerant. Quantum annealing and analog simulation appear only as mechanism entries in \cref{sec:mechanisms} and would need their own resource contracts (embedding, schedule, control precision) before the audit applies quantitatively. Quantum sensing and networking are outside the framework entirely, as \cref{sec:astro} makes explicit. Throughout, claims are labeled by evidence class---established theorem, engineering approximation, empirical evidence, author synthesis, or provisional hypothesis---and the matrix in \cref{sec:discussion} maps each major conclusion to its support.

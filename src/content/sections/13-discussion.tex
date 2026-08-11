@@ -1,0 +1,40 @@
+% !TeX root = ../../../main.tex
+\section{Discussion: Effective, Efficient, and Honest}\label{sec:discussion}
+
+An \emph{effective} quantum algorithm returns the right scientific object within the required error. An \emph{efficient} one does so with favorable end-to-end resources. These are different standards. A proof-of-principle experiment may be effective but inefficient. A query-complexity theorem may be efficient in an oracle model but ineffective on available hardware. A hybrid heuristic may be useful without a provable speedup. The labels should not be forced to agree.
+
+The time ledger should be written at the granularity at which costs actually recur. One correct decomposition is
+\begin{align}
+T_{\mathrm{total}}={}&\underbrace{T_{\mathrm{compile}}+T_{\mathrm{calibrate}}+T_{\mathrm{load}}}_{\text{one-time / amortizable}}
+\;+\;N_{\mathrm{iter}}\Bigl[T_{\mathrm{classical}}^{(\mathrm{iter})}+T_{\mathrm{I/O}}^{(\mathrm{iter})}\Bigr.\notag\\
+&\Bigl.{}+\sum_{c\in\mathcal{C}}\Bigl(T_{\mathrm{submit}}^{(c)}
++N_{\mathrm{shots}}^{(c)}\bigl(T_{\mathrm{prep}}+T_{\mathrm{circ}}^{(c)}+T_{\mathrm{meas}}+T_{\mathrm{reset}}\bigr)\Bigr)\Bigr]
++T_{\mathrm{verify}},
+\label{eq:complete-ledger}
+\end{align}
+where $N_{\mathrm{iter}}$ counts hybrid (classical--quantum) iterations, $\mathcal{C}$ is the set of distinct circuits (measurement settings) per iteration, $N_{\mathrm{shots}}^{(c)}$ the shots per circuit, $T_{\mathrm{prep}}$, $T_{\mathrm{circ}}^{(c)}$, $T_{\mathrm{meas}}$, and $T_{\mathrm{reset}}$ the per-shot state preparation, circuit execution, measurement, and reset times, $T_{\mathrm{submit}}^{(c)}$ the per-job queueing and transfer overhead, $T_{\mathrm{classical}}^{(\mathrm{iter})}$ and $T_{\mathrm{I/O}}^{(\mathrm{iter})}$ the per-iteration classical processing and boundary crossings, and $T_{\mathrm{verify}}$ the final verification. The bracing distinction is between costs that amortize (compilation, calibration, initial data loading into a classical controller) and costs that recur \emph{every shot}: state preparation is inside the innermost multiplier, which is exactly why input encoding dominates so many proposed data-driven workflows. The resource ledger should also report memory, qubits, energy where available, and experimental opportunity cost. This level of accounting can make a proposed advantage smaller. It can also reveal a better algorithm. If state preparation dominates, change the representation or keep the data quantum-native. If measurement dominates, redesign the output or group observables. If routing dominates, use the constraint graph to shape the ansatz. If classical latency dominates, reduce boundary crossings. If error correction dominates, lower non-Clifford count or trade more qubits for factory throughput. Every ugly term is a design signal.
+
+The field is moving from isolated circuit demonstrations toward co-designed systems, and contemporary community assessments emphasize realistic resource constraints, useful application targets, and stronger classical comparisons \citep{nqiworkshop2025}. The next decisive quantum algorithm may not be the one with the most novel gates. It may be the one whose author writes the cleanest contract between mathematics, physics, hardware, and evidence.
+
+\subsection{Claim--evidence matrix}
+
+Each major conclusion of this paper rests on a different kind of support, and the categories should not be confused.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{p{0.44\textwidth}p{0.22\textwidth}p{0.26\textwidth}}
+\toprule
+\textbf{Claim} & \textbf{Evidence class} & \textbf{Support} \\
+\midrule
+Readout and input access can erase query speedups & Established theorems & \citep{harrow2009,aaronson2015,tang2019} \\
+Shot budgets \eqref{eq:hoeffding}--\eqref{eq:neyman-shots} and their $\sim$150$\times$ spread & Theorem + engineering approximation & Derivations in \cref{sec:resources}; machine-verified and empirically coverage-tested (\cref{app:demo}) \\
+Toy noise screen and fault-tolerant floor & Engineering approximations & Stated assumptions; scaling form observed experimentally \citep{acharya2025} \\
+Mitigation is sampling debt & Established theory + empirical evidence & \citep{cai2023,quek2024} \\
+The audit procedure (Algorithm 1) is useful & Author synthesis & One reproducible small-scale execution (\cref{app:demo}); hardware-scale validation open (\cref{sec:audits}) \\
+Domain audits (DNA, scheduling, HEP, astronomy) & Author synthesis + provisional hypotheses & Framing analyses; quantitative rejection of phase encoding in \cref{app:demo} \\
+Astronomy opportunity ranking & Provisional hypothesis & Author judgment under stated criteria (\cref{sec:astro}) \\
+\bottomrule
+\end{tabular}
+\caption{What supports each major conclusion.}
+\label{tab:claim-evidence}
+\end{table}

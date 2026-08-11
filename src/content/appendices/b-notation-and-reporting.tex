@@ -1,0 +1,23 @@
+% !TeX root = ../../../main.tex
+\section{Notation and Reporting Minimums}
+
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{0.20\textwidth} X}
+\toprule
+Symbol & Meaning\\
+\midrule
+$N$ & Problem size under an explicitly stated encoding\\
+$\epsilon$ & Required additive or relative numerical error\\
+$\delta$ & Permitted failure probability\\
+$Q_L,Q_{\mathrm{phys}}$ & Logical- and physical-qubit counts\\
+$N_{2q},D_{2q}$ & Two-qubit gate count and two-qubit depth after routing\\
+$N_T,D_T$ & Non-Clifford $T$ count and dependency depth\\
+$N_{\mathrm{shots}}$ & Total circuit executions, including mitigation and controls\\
+$p_s$ & Per-run probability of satisfying the success condition\\
+$d$ & Quantum error-correcting code distance\\
+$R_T$ & Aggregate magic-state production rate\\
+$B_C$ & Strongest matched classical baseline\\
+$\TTS$ & End-to-end time to reach a target success probability\\
+\bottomrule
+\end{tabularx}
+
+At minimum, a reported result should bind these symbols to a particular input family, software revision, compiler configuration, machine or machine model, calibration window, classical hardware, and accuracy definition. Without those bindings, resource numbers are not reusable evidence.

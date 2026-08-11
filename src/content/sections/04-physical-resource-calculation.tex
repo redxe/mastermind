@@ -1,0 +1,157 @@
+% !TeX root = ../../../main.tex
+\section{Calculating a Research Question on a Physical Quantum Computer}\label{sec:resources}
+
+Suppose a researcher has a physical machine, a scientific observable, and fixed bounds. How should she calculate whether the experiment is possible? She should begin by treating the machine as a resource envelope rather than a qubit count.
+
+\subsection{The resource envelope}
+
+For a gate-model processor, define
+\begin{equation}
+\Lambda_{\mathrm{HW}}=
+\bigl(Q_{\mathrm{phys}},G_{\mathrm{native}},\mathcal{G}_{\mathrm{conn}},
+p_{1},p_{2},p_m,p_{\mathrm{idle}},
+\tau_{1},\tau_{2},\tau_m,T_1,T_2,
+r_{\mathrm{reset}},\ell_C\bigr),
+\end{equation}
+where $Q_{\mathrm{phys}}$ is the available physical-qubit count, $G_{\mathrm{native}}$ the native gate set, $\mathcal{G}_{\mathrm{conn}}$ the coupling graph, $p$ and $\tau$ the error rates and durations of operations, $T_1$ and $T_2$ the coherence scales, $r_{\mathrm{reset}}$ the reset rate, and $\ell_C$ the latency of classical control, decoding, and network round trips. Calibration statistics should include distributions and drift, not only daily averages.
+
+The algorithmic ledger should include, at minimum,
+\begin{equation}
+R_{\mathrm{alg}}=
+\bigl(Q_L,N_{1q},N_{2q},D_{2q},N_M,N_T,D_T,N_{\mathrm{oracle}},
+N_{\mathrm{shots}},N_{\mathrm{iter}},W_{\mathrm{classical}}\bigr).
+\end{equation}
+Here $D_{2q}$ is usually more revealing than total gate count on a noisy device, while $N_T$ and $D_T$ often dominate a surface-code fault-tolerant design because non-Clifford operations require distilled resource states \citep{fowler2012,gidney2021,vandam2024}.
+
+\subsection{Spend error like a budget}
+
+Fix an error metric for the reported quantity (for example, additive error on a normalized expectation value). The permitted scientific error should then be \emph{allocated} before implementation: choose targets $\bar\epsilon_i$ for each source such that their sum respects the requirement, and verify that each achieved contribution stays within its allocation. Two inequalities are needed, not one:
+\begin{equation}
+\epsilon_{\mathrm{achieved}}
+\;\leq\;
+\underbrace{\epsilon_{\mathrm{model}}
++\epsilon_{\mathrm{discretization}}
++\epsilon_{\mathrm{encoding}}
++\epsilon_{\mathrm{synthesis}}
++\epsilon_{\mathrm{statistical}}
++\epsilon_{\mathrm{hardware}}}_{\textstyle\sum_i \epsilon_i}
+\;\leq\;
+\epsilon_{\mathrm{target}}.
+\label{eq:error-budget}
+\end{equation}
+The left inequality is the worst-case triangle bound; the right inequality is the budget constraint $\sum_i\bar\epsilon_i\leq\epsilon_{\mathrm{target}}$ that the design must satisfy by construction. Additivity is itself an assumption: correlated systematic errors can exceed the sum of individually characterized terms, while independent zero-mean statistical contributions combine in quadrature and make the triangle bound pessimistic. State which regime applies to each pair of terms.
+
+Failure probabilities follow the same discipline through an explicit union bound. If the workflow can fail in stages $i$ (state preparation, logical faults, magic-state distillation, rotation synthesis, optimization failure, hypothesis testing) with probabilities $\delta_i$, then
+\begin{equation}
+\Pr[\text{any stage fails}]\;\leq\;\sum_i \delta_i\;\leq\;\delta_{\mathrm{target}},
+\label{eq:delta-union}
+\end{equation}
+and each $\delta_i$ must be allocated before the stage is engineered. This is not clerical accounting. If the physics model already consumes the tolerance, improving gate fidelity cannot rescue the scientific result. If sampling consumes the wall-clock budget, shortening the circuit may not matter.
+
+\subsection{A toy triage model for noisy devices}
+
+For a shallow physical circuit, a deliberately crude screen assumes that every operation is followed by an \emph{independent stochastic Pauli fault} with the quoted probability, so the probability that no fault occurs anywhere is
+\begin{equation}
+P_{0}\approx
+(1-p_{1})^{N_{1q}}
+(1-p_{2})^{N_{2q}}
+(1-p_m)^{N_M}
+\exp\!\left(-\frac{T_{\mathrm{circ}}}{T_{\mathrm{coh}}}\right).
+\label{eq:nisq-screen}
+\end{equation}
+This is a toy triage model, not a fidelity estimate. Its assumptions fail in specific, known ways: benchmark numbers such as randomized-benchmarking infidelities average over gate ensembles and cannot simply be substituted as per-location fault probabilities; coherent errors can add in amplitude rather than probability; crosstalk and leakage are not local; and the coherence exponential can double-count decay already reflected in the gate infidelities. The model is useful only in one direction: if this \emph{optimistic} calculation is already catastrophic, the circuit must change before a more expensive noise study. For a serious worked example, a channel-level simulation with a calibrated noise model should replace \cref{eq:nisq-screen}.
+
+Measurement then sets a separate lower bound. For an observable whose per-shot outcome is bounded in $[-1,1]$ (range 2), Hoeffding's inequality gives
+\begin{equation}
+N_{\mathrm{shots}}
+\geq \frac{2\ln(2/\delta)}{\epsilon_{\mathrm{statistical}}^2},
+\label{eq:hoeffding}
+\end{equation}
+about $7.4\times10^{4}$ shots at $\epsilon=0.01$, $\delta=0.05$. When the variance $\sigma^2$ is known or estimated, a normal approximation gives
+\begin{equation}
+N_{\mathrm{shots}}\approx
+\frac{z_{1-\delta/2}^{2}\sigma^2}{\epsilon_{\mathrm{statistical}}^2}.
+\end{equation}
+Measurement grouping, classical shadows, importance allocation, and problem symmetry can reduce the number of distinct circuits. Error mitigation can reduce bias, but it generally increases variance and sampling cost; its overhead must be measured rather than described as free cleanup \citep{cai2023,quek2024}.
+
+If one run returns a valid solution with probability $p_s$ (assumed stationary across repetitions; drift violates this, see \cref{sec:evidence}), the repetitions required to succeed with probability at least $\eta$ are
+\begin{equation}
+R_{\eta}=\left\lceil
+\frac{\ln(1-\eta)}{\ln(1-p_s)}
+\right\rceil,
+\qquad
+\TTS_{\eta}=R_{\eta}
+\left(T_Q+T_C+T_{\mathrm{I/O}}\right).
+\label{eq:tts}
+\end{equation}
+Time-to-solution ($\TTS$), not gate count, is the honest unit for a probabilistic hybrid workflow.
+
+\subsection{Worked noisy example: the circuit fits, but does the experiment?}
+
+Consider a hypothetical 40-qubit expectation-value experiment with $N_{1q}=600$, $N_{2q}=300$, $N_M=40$, $p_1=2\times10^{-4}$, $p_2=5\times10^{-3}$, $p_m=1.5\times10^{-2}$, and $T_{\mathrm{circ}}/T_{\mathrm{coh}}=0.15$. The screening model gives
+\begin{align}
+\ln P_0 &\approx 600\ln(0.9998)+300\ln(0.995)
++40\ln(0.985)-0.15\\
+&\approx -2.38,
+\end{align}
+or $P_0\approx 0.093$. That does not mean $9.3\%$ of shots are labeled ``correct.'' It means the no-fault path is already rare under an optimistic model, so the observable must be unusually noise-robust, symmetry-verifiable, or shallow enough after recompilation to justify hardware time.
+
+Now consider the measurement budget for an energy estimate, done properly. Write the Hamiltonian as $H=\sum_j c_j P_j$ with Pauli terms $P_j$ partitioned into $G$ commuting groups; group $g$ carries weight $a_g=\sum_{j\in g}\lvert c_j\rvert$, and each shot of setting $g$ returns a value in $[-a_g,a_g]$. The estimator is $\hat H=\sum_g \hat\mu_g$ with per-group sample means $\hat\mu_g$, so
+\begin{equation}
+\Var(\hat H)=\sum_{g=1}^{G}\frac{\sigma_g^2}{N_g},
+\qquad \sigma_g^2\leq a_g^2,
+\label{eq:grouped-variance}
+\end{equation}
+where covariances between groups vanish because settings are measured in separate shots. It is \emph{not} sufficient to give every setting the single-observable shot count from \cref{eq:hoeffding}: that controls each $\hat\mu_g$ separately but says nothing about the total error of $\hat H$ at joint confidence $1-\delta$. Two correct allocations bracket the answer.
+
+\emph{Worst-case allocation.} Allocate the error budget as $\epsilon_g=\epsilon\, a_g/\sum_h a_h$ and the failure budget uniformly, $\delta_g=\delta/G$ (union bound, \cref{eq:delta-union}). Hoeffding on each group then requires
+\begin{equation}
+N_g\geq \frac{2a_g^2\ln(2G/\delta)}{\epsilon_g^2}
+=\frac{2\bigl(\sum_h a_h\bigr)^2\ln(2G/\delta)}{\epsilon^2}.
+\label{eq:worstcase-shots}
+\end{equation}
+For $G=40$ groups with total weight $\sum_h a_h=1$ (declared toy normalization), $\epsilon=0.01$, and $\delta=0.05$, this gives $N_g\approx1.5\times10^{5}$ per setting and roughly $5.9\times10^{6}$ shots per energy evaluation---about 3.3 hours of raw QPU time per optimizer step at an \emph{assumed} 2 ms per shot (shot time is platform-dependent by orders of magnitude, and total time scales linearly in it).
+
+\emph{Variance-aware allocation.} If group variances $\sigma_g^2$ are measured, Neyman allocation $N_g\propto\sigma_g$ under a normal approximation gives a total
+\begin{equation}
+N_{\mathrm{shots}}\approx
+\frac{z_{1-\delta/2}^{2}\bigl(\sum_g \sigma_g\bigr)^2}{\epsilon^2},
+\label{eq:neyman-shots}
+\end{equation}
+which for the same toy weights with $\sigma_g$ near their bound is roughly $3.8\times10^{4}$ shots---about 1.3 minutes per evaluation---and far less when the state concentrates the variance in a few groups. The two estimates do not carry the same guarantee: \cref{eq:worstcase-shots} is finite-sample and distribution-free, while \cref{eq:neyman-shots} is asymptotic, holds the \emph{total} error to $\epsilon$ only approximately, and requires variances from a pilot run whose $G N_{\mathrm{pilot}}$ shots (and per-group rounding $\lceil N_g\rceil$) belong in the ledger. In the reproducible demonstration of \cref{app:demo}, the worst-case allocation achieved empirical coverage $1.000$ and the Neyman allocation $0.938$ against a $0.95$ target---exactly the expected behavior of a bound versus an approximation. The roughly $150\times$ spread between \cref{eq:worstcase-shots,eq:neyman-shots} is the point: measured variances, coefficient weighting, and an explicit joint-confidence argument are not refinements, they are the calculation. Twenty optimizer evaluations range from under an hour to several days depending on which regime the instance occupies, before queueing, compilation, calibration circuits, or mitigation. The real research question has changed from ``Does the 40-qubit circuit fit?'' to ``Can structure reduce settings, variance, or iterations by an order of magnitude without biasing the observable?'' That is a useful question. All numbers in this subsection are reproduced by \texttt{scripts/verify\_calculations.py} in the paper's artifact.
+
+\subsection{Fault-tolerant calculation}
+
+For an error-corrected machine, let $L$ be the number of fault locations and allocate logical failure probability $\delta_{\mathrm{QEC}}$. A common surface-code engineering model is
+\begin{equation}
+p_L(d)\approx A\left(\frac{p}{p_{\mathrm{th}}}\right)^{(d+1)/2},
+\label{eq:logical-error}
+\end{equation}
+which captures exponential suppression below threshold. Recent below-threshold surface-code experiments report this scaling form while also exposing correlated-error floors and real-time decoding demands \citep{acharya2025}. Requiring $L p_L(d)\leq\delta_{\mathrm{QEC}}$ gives the screening distance
+\begin{equation}
+d\geq
+2\frac{\ln\!\left(\delta_{\mathrm{QEC}}/(A L)\right)}
+{\ln\!\left(p/p_{\mathrm{th}}\right)}-1,
+\label{eq:distance}
+\end{equation}
+rounded up to a supported code distance. The physical-qubit count is then approximately
+\begin{equation}
+Q_{\mathrm{phys}}
+\approx c_d d^2 Q_L+Q_{\mathrm{factory}}+Q_{\mathrm{routing}}+Q_{\mathrm{buffer}},
+\label{eq:physical-qubits}
+\end{equation}
+where $c_d$ is a layout constant (about 2 for a rotated surface-code patch, larger once operational layout and lattice-surgery ancillas are included). The runtime is bounded below by both logical dependency depth and magic-state supply:
+\begin{equation}
+T_{\mathrm{run}}\gtrsim
+\max\!\left(D_{\mathrm{dep}}\tau_L,\frac{N_T}{R_T}\right)
++T_{\mathrm{decode}}+T_{\mathrm{feedforward}},
+\label{eq:ft-runtime}
+\end{equation}
+where $D_{\mathrm{dep}}$ is the depth of the logical dependency graph and $\tau_L$ is the logical cycle time, itself roughly $d$ rounds of syndrome extraction plus decoding latency.
+
+As an illustration, take $L=10^{10}$, $\delta_{\mathrm{QEC}}=10^{-2}$, $A=0.1$, and $p/p_{\mathrm{th}}=0.1$. Equation \eqref{eq:distance} gives $d\geq21$. The idealized rotated surface-code memory count $2d^2-1$ is then 881 physical qubits per logical qubit, so a 1,000-logical-qubit algorithm begins near 881,000 physical qubits. This figure is an \emph{idealized memory-only floor}: it excludes operational patch layout, lattice surgery routing, distillation factories, spare capacity, and control infrastructure, each of which typically multiplies the count. The estimate is also steeply sensitive to its inputs---halving $p/p_{\mathrm{th}}$ or relaxing $\delta_{\mathrm{QEC}}$ by an order of magnitude changes $d$ by several steps and the qubit count quadratically in $d$, while factory count and logical cycle time trade against each other in \cref{eq:ft-runtime}. A publishable estimate should therefore report a sensitivity table over physical error rate, error budget, code distance, factory count, and logical cycle time, ideally produced by an established resource estimator rather than by \cref{eq:distance,eq:physical-qubits} alone. Modern tools explicitly combine physical error rates, operation times, quantum error correction (QEC) protocols, error budgets, logical depth, and distillation constraints for this reason \citep{beverland2022,vandam2024}.
+% TODO: run the worked circuit through an established resource estimator (e.g., Azure Quantum Resource Estimator) and replace the screening numbers with tool output plus a sensitivity table.
+
+\begin{warningbox}[What the algebra does not know]
+Equations \eqref{eq:logical-error}--\eqref{eq:ft-runtime} are planning models, not warranties. Long-range correlated events, leakage, decoder latency, yield, fabrication variation, thermal constraints, network congestion, and control electronics can dominate a real architecture. A resource estimate should therefore be published with its machine model and sensitivity analysis, not as a single impressive integer.
+\end{warningbox}

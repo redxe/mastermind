@@ -1,0 +1,57 @@
+% !TeX program = pdflatex
+% Composition root (controller): document order belongs here.
+\documentclass[11pt,letterpaper]{article}
+
+\input{src/presentation/packages.tex}
+\input{src/content/metadata.tex}
+\input{src/presentation/commands.tex}
+\input{src/presentation/theme.tex}
+
+\begin{document}
+\hypersetup{pageanchor=false}
+\input{src/content/frontmatter/title-page.tex}
+\hypersetup{pageanchor=true}
+
+\pagenumbering{roman}
+\input{src/content/frontmatter/abstract.tex}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+% Phase I: define the contract and identify a real quantum mechanism.
+\part{Problem Contract and Opportunity}
+\input{src/content/sections/01-introduction.tex}
+\input{src/content/sections/01b-related-work.tex}
+\input{src/content/sections/02-problem-contract.tex}
+\input{src/content/sections/03-opportunity-mechanisms.tex}
+
+% Phase II: compile the idea into a complete, falsifiable experiment.
+\part{Engineering the Complete Experiment}
+\input{src/content/sections/04-physical-resource-calculation.tex}
+\input{src/content/sections/05-experimental-program.tex}
+\input{src/content/sections/06-hybrid-boundary.tex}
+\input{src/content/sections/07-engineering-principles.tex}
+
+% Phase III: stress-test the framework against concrete domains.
+\part{Application Stress Tests}
+\input{src/content/sections/08-engineering-case-studies.tex}
+\input{src/content/sections/09-subatomic-physics.tex}
+\input{src/content/sections/10-astronomy.tex}
+
+% Phase IV: turn the argument into a repeatable engineering workflow.
+\part{Synthesis and Reusable Workflow}
+\input{src/content/sections/11-founder-heuristics.tex}
+\input{src/content/sections/12-research-blueprint.tex}
+\input{src/content/sections/13-discussion.tex}
+\input{src/content/sections/13b-limitations.tex}
+\input{src/content/sections/14-conclusion.tex}
+
+\appendix
+\input{src/content/appendices/a-opportunity-worksheet.tex}
+\input{src/content/appendices/b-notation-and-reporting.tex}
+\input{src/content/appendices/c-demonstration.tex}
+
+\bibliographystyle{plainnat}
+\bibliography{references/quantum_algorithm_engineering}
+
+\end{document}

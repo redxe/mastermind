@@ -1,0 +1,64 @@
+% !TeX root = ../../../main.tex
+\section{The Research Blueprint: Questions Worth Asking in Order}
+
+The following questions can serve as a proposal template, design review, or research notebook. They are intentionally ordered. Skipping forward usually creates expensive rework.
+
+\subsection{Scientific contract}
+
+\begin{enumerate}
+  \item What exact observable, sample, candidate, or decision is required?
+  \item At what problem scale, precision $\epsilon$, confidence $1-\delta$, and deadline does it become scientifically useful?
+  \item Which approximation errors change the conclusion, and which only change presentation?
+  \item How is a correct answer recognized when exact simulation is unavailable?
+\end{enumerate}
+
+\subsection{Classical obstruction}
+
+\begin{enumerate}[resume]
+  \item What is the best current classical workflow, including preprocessing and specialized hardware?
+  \item Which subroutine dominates its wall-clock time, memory, energy, or scaling?
+  \item Is the bottleneck worst-case, average-case, precision-driven, data-movement-driven, or model-driven?
+  \item Does the target instance distribution actually exhibit the hard structure?
+\end{enumerate}
+
+\subsection{Quantum mechanism}
+
+\begin{enumerate}[resume]
+  \item Is there periodicity, symmetry, sparsity, locality, a spectral gap, rare-event structure, a walk, a reversible predicate, or native quantum dynamics?
+  \item Which primitive exploits that feature, and what is its query complexity under stated promises?
+  \item What happens on a control instance where the feature is removed?
+  \item Is the advantage polynomial, exponential, heuristic, or only a constant factor---and in which parameter?
+\end{enumerate}
+
+\subsection{Interface and encoding}
+
+\begin{enumerate}[resume]
+  \item How is the input prepared: explicit loading, sparse oracle, generative circuit, block encoding, or quantum-native state?
+  \item What is the gate, depth, ancilla, and memory cost of the oracle, including arithmetic and uncomputation?
+  \item Is the desired output compact, and how many measurements recover it?
+  \item Can data preparation be amortized across many coherent operations or hybrid iterations?
+\end{enumerate}
+
+\subsection{Physical calculation}
+
+\begin{enumerate}[resume]
+  \item What does the circuit become after synthesis, placement, routing, scheduling, and dynamic-control insertion?
+  \item For noisy hardware, what are the two-qubit depth, screening fidelity, observable variance, mitigation overhead, and time-to-solution?
+  \item For fault-tolerant hardware, what are the logical qubits, fault locations, code distance, physical qubits, $T$ count, $T$ depth, factory rate, and decoder latency?
+  \item Which assumptions dominate the sensitivity analysis and move the crossover most?
+\end{enumerate}
+
+\subsection{Hybrid and experimental design}
+
+\begin{enumerate}[resume]
+  \item Which tasks remain cheaper, more reliable, or more auditable classically?
+  \item How often is the quantum--classical boundary crossed, and what information passes through it?
+  \item What exact, mechanism, application, stress, and crossover instances will be tested?
+  \item Are controls interleaved across calibration windows and execution order randomized?
+  \item Are raw counts, compiler artifacts, seeds, calibration data, resource estimates, and classical baselines preserved?
+  \item What result would cause the team to stop, repartition, or reject the quantum approach?
+\end{enumerate}
+
+\begin{thesisbox}[The final review question]
+If the quantum subroutine were replaced tomorrow by a faster classical method, would the problem specification, validation pipeline, and resource ledger still be useful? If yes, the research program has probably isolated real knowledge. If no, it may have been organized around a device demo rather than a scientific question.
+\end{thesisbox}

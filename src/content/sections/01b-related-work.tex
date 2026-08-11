@@ -1,0 +1,19 @@
+% !TeX root = ../../../main.tex
+\section{Related Work}\label{sec:related}
+
+This paper sits between three literatures, and the review here is deliberately selective rather than systematic. First, \emph{resource estimation}: Beverland et al.\ formalize the mapping from logical algorithm to physical requirements under explicit hardware and quantum error correction (QEC) models \citep{beverland2022}, and van Dam et al.\ apply end-to-end estimation to utility-scale chemistry and materials workloads \citep{vandam2024}. Those works supply the calculational machinery this paper's Phase~2 depends on; the present contribution is the surrounding contract---what to demand of a problem \emph{before} the estimator runs. Second, \emph{application assessment}: skeptical analyses of fine print \citep{aaronson2015}, surveys of algorithmic applications \citep{montanaro2016}, chemistry-focused assessments \citep{bauer2023prx}, and community roadmapping \citep{nqiworkshop2025,dimeglio2024} each evaluate where advantage might survive; this paper differs by packaging the evaluation as a reusable, falsifiable procedure with predeclared evidence standards \citep{eisert2020}. Third, \emph{benchmarking and tooling}: suites such as MQT Bench standardize benchmark-circuit provision across abstraction levels (they supply comparable circuits rather than crossover verdicts) \citep{quetschlich2023}, and dequantization results discipline input-access assumptions \citep{tang2019,tang2021}.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{p{0.30\textwidth}p{0.30\textwidth}p{0.30\textwidth}}
+\toprule
+\textbf{Line of work} & \textbf{What it provides} & \textbf{What this paper adds} \\
+\midrule
+Resource estimators \citep{beverland2022,vandam2024} & Logical-to-physical cost models, tool-supported estimates & The upstream problem contract and stop conditions that decide whether to run them \\
+Application assessments \citep{aaronson2015,montanaro2016,bauer2023prx} & Domain-by-domain judgments of plausibility & A domain-independent audit procedure with explicit acceptance criteria \\
+Benchmarking and evidence standards \citep{quetschlich2023,eisert2020} & Comparable circuits; verification methods & An end-to-end evidence protocol tied to the scientific claim, including the classical opponent \\
+\bottomrule
+\end{tabular}
+\caption{Positioning relative to adjacent literatures (selective comparison).}
+\label{tab:related}
+\end{table}

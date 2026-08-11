@@ -1,0 +1,42 @@
+% !TeX root = ../../../main.tex
+\section{Subatomic Physics: Where Quantum Structure Is Native}\label{sec:hep}
+
+Subatomic physics is one of the strongest \emph{conceptual} matches for quantum computation---in the mechanism sense of \cref{sec:mechanisms}, not as a claim of demonstrated practical advantage---because the expensive object is already quantum. Feynman's original argument was not that quantum computers should accelerate every database. It was that classical probability may fail to represent quantum physics efficiently, suggesting that a controllable quantum system should simulate another \citep{feynman1982}. Modern high-energy physics (HEP) and nuclear programs target Hamiltonian dynamics, lattice gauge theories, scattering, real-time response, finite-density physics, neutrino systems, and many-body structure \citep{bauer2023prx,bauer2023nrp,dimeglio2024}.
+
+\subsection{Why the opportunity is real}
+
+Classical lattice field theory is extraordinarily successful for equilibrium quantities in regimes compatible with importance sampling. The opportunity appears where classical methods encounter a sign problem, entanglement growth, real-time evolution, finite density, or exponentially large state spaces. A quantum processor can represent the state directly and apply local time evolution without enumerating all amplitudes. The mechanism is Hamiltonian simulation, not the phrase ``particle physics.''
+
+For a lattice gauge calculation, the scientific error ledger may be written
+\begin{equation}
+\epsilon_{\mathrm{HEP}}
+\leq
+\epsilon_{\mathrm{lattice}}
++\epsilon_{\mathrm{volume}}
++\epsilon_{\mathrm{field\ trunc.}}
++\epsilon_{\mathrm{state\ prep.}}
++\epsilon_{\mathrm{time\ evol.}}
++\epsilon_{\mathrm{measurement}}
++\epsilon_{\mathrm{hardware}}.
+\label{eq:hep-error}
+\end{equation}
+The continuum result requires reducing lattice spacing and increasing volume; bosonic fields or gauge links may require Hilbert-space truncation; physical scattering states must be prepared; Hamiltonian evolution must be approximated; and observables need repeated measurement. A tiny circuit with low hardware error can still answer the wrong field theory if the first three terms dominate.
+
+Gauge symmetry illustrates how physics should shape the algorithm. Gauss's law can be enforced by a gauge-invariant encoding, a restricted basis, symmetry verification, or energy penalties. The first choices can reduce invalid states but complicate local operations; the penalty choice is simple but can distort energy scales and demand higher precision. Recent qudit experiments emphasize that matching hardware dimension and connectivity to gauge degrees of freedom can reduce encoding overhead \citep{meth2025}. Hardware--algorithm co-design changes the size of the physical Hilbert space here.
+
+\subsection{A bounded subatomic research workflow}
+
+For a question such as ``What is the real-time response $C(t)=\bra{\psi_0}O(t)O(0)\ket{\psi_0}$ within tolerance $\epsilon$ for a truncated lattice theory?'', the researcher should:
+
+\begin{enumerate}
+  \item specify the lattice, boundary conditions, gauge group, field truncation, initial state, observable, time window, and total error;
+  \item exploit conserved charges and symmetries before mapping degrees of freedom to qubits or qudits;
+  \item choose between product formulas, qubitization, variational dynamics, or analog simulation using the actual Hamiltonian structure and hardware regime;
+  \item estimate state-preparation overlap and the cost of every SELECT/PREPARE oracle (the standard pair of subroutines used to block-encode a Hamiltonian as a linear combination of unitaries) or Trotter step;
+  \item allocate shots according to observable variance and decide which local or symmetry checks remain classically verifiable;
+  \item validate against exact diagonalization, tensor networks, perturbative limits, and Euclidean calculations on an instance ladder;
+  \item extrapolate lattice, truncation, and hardware errors separately rather than fitting one forgiving curve.
+\end{enumerate}
+
+This is a strong \emph{mechanism match}---the representation, dynamics, and observable can all remain quantum---conditional on the interface and physical audits passing for a specific bounded model. It is also demanding because the scientific limit requires multiple simultaneous extrapolations. The match is strong; the schedule is not automatically short, and no practical advantage follows automatically from the dynamics being quantum-native.
+% TODO: instantiate this workflow for a bounded model (e.g., a small Schwinger-model response function) with explicit truncation, budget, and baseline numbers, rather than leaving the checklist abstract.

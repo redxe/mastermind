@@ -1,0 +1,36 @@
+% !TeX root = ../../../main.tex
+\section{What Engineering Has Already Identified}
+
+Across algorithms and hardware, several principles now repeat often enough to be treated as engineering knowledge.
+
+\subsection{Hard is not a mechanism}
+
+NP-hardness identifies a worst-case classical complexity class. It does not promise a quantum speedup, much less a near-term one. Grover search offers a quadratic improvement for black-box search, not an exponential escape from arbitrary combinatorial structure \citep{grover1997}. Useful quantum optimization requires additional geometry, spectral properties, instance distributions, or constrained dynamics.
+
+\subsection{Input models are part of the theorem}
+
+Oracle access, quantum random-access memory (QRAM), sparse access, block encodings, and amplitude-encoded states are not equivalent. Their construction cost can determine the application. Conversely, structured data may sometimes be prepared by compact circuits, so ``loading is always linear'' is also too crude. The researcher must state the access model and compile it for the actual data distribution rather than argue by slogan \citep{aaronson2015,tang2021}.
+
+\subsection{Output size can reverse a speedup}
+
+An $n$-qubit state can hold quantities whose classical description would be exponentially large, but measurement returns at most $n$ bits per shot: the state is a compact \emph{carrier} of certain global properties, not a readable database. Prefer questions whose answer is a statistic, energy, phase, sample, classification, or verifiable candidate. If the downstream system requires every amplitude, put the readout cost in the theorem.
+
+\subsection{Asymptotics need a crossover}
+
+Big-$O$ notation removes constants, yet constants are where fault tolerance lives. Resource studies repeatedly show that an asymptotically superior method can lose at all practical input sizes, or require a logical clock rate and physical-qubit count that move the crossover beyond the scientific deadline \citep{gidney2021,vandam2024}. Publish the crossover surface over $N$, $\epsilon$, physical error rate, and hardware throughput, not a single curve with the inconvenient region cropped away.
+
+\subsection{Compilation changes the algorithm}
+
+Connectivity inserts swaps. Gate synthesis converts rotations into non-Clifford resources. Mid-circuit measurement adds feedforward latency. Routing increases idle errors. A logical circuit and a physical experiment are different artifacts; both should be versioned and costed.
+
+\subsection{Error mitigation is sampling debt}
+
+Mitigation can turn a biased estimate into a better one, but the bill often arrives as variance, additional circuits, model assumptions, and calibration sensitivity. Fundamental results limit the scalability of undoing generic noise without correction \citep{cai2023,quek2024}. The honest metric is error at fixed total experimental cost.
+
+\subsection{Constraints can become architecture}
+
+Penalty terms are not the only way to handle constraints. If a mixer or encoding remains inside the feasible subspace, invalid states never consume amplitude. Constraint-preserving constructions can reduce wasted search and improve interpretability, although their circuits may be more complex \citep{fuchs2024}. The constraint graph should shape the circuit, not merely punish it afterward.
+
+\subsection{The classical frontier moves when quantum work exposes structure}
+
+Quantum research frequently produces better classical algorithms, tensor-network approximations, randomized numerical methods, or improved decompositions. That is not failure. It is evidence that the problem has been understood more deeply. A credible program expects the baseline to fight back.
