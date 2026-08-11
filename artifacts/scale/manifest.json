@@ -1,0 +1,17 @@
+{
+ "generated_utc": "2026-08-11T21:50:53.916985+00:00",
+ "python": "3.11.4",
+ "platform": "Windows-10-10.0.19045-SP0",
+ "numpy": "2.4.6",
+ "qiskit": "2.5.1",
+ "params": {
+  "J": 1.0,
+  "g": 1.0,
+  "theta1": 1.1148874287564283,
+  "theta2": 0.20641951023931937,
+  "shots_fixed": 4096,
+  "eps_rule": "0.05*n",
+  "seed": 20260811
+ },
+ "note": "Wall times are single-run measurements on one workstation; scaling trend, not benchmark."
+}

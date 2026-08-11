@@ -2,3 +2,14 @@
 build/
 *.synctex.gz
 .venv-ariadion/ 
+.venv-qiskit/
+*.txt.log
+qv.txt
+hwlog_*.txt
+schwlog.txt
+relog.txt
+scalelog*.txt
+qsharpinfo.txt
+smoke.txt
+proc.txt
+__pycache__/ 

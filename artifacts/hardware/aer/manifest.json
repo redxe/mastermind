@@ -1,0 +1,78 @@
+{
+  "backend": "aer",
+  "backend_kind": "aer",
+  "calibration_screen": null,
+  "cross_validation": {
+    "qiskit_vs_ariadion_X": "PASS (atol 1e-9)",
+    "qiskit_vs_ariadion_Z": "PASS (atol 1e-9)",
+    "qiskit_vs_oracle": "PASS (atol 1e-9)"
+  },
+  "dependency_lock_pip_freeze": [
+    "annotated-types==0.8.0",
+    "antlr4-python3-runtime==4.13.2",
+    "certifi==2026.7.22",
+    "cffi==2.1.1",
+    "charset-normalizer==3.4.9",
+    "cryptography==50.0.0",
+    "dill==0.4.1",
+    "ibm-cloud-sdk-core==3.26.0",
+    "ibm-platform-services==0.77.0",
+    "ibm-quantum-schemas==0.10.20260723",
+    "idna==3.18",
+    "numpy==2.4.6",
+    "openqasm3==1.0.1",
+    "orjson==3.11.9",
+    "psutil==7.2.2",
+    "pybase64==1.5.0",
+    "pycparser==3.0",
+    "pydantic==2.13.4",
+    "pydantic_core==2.46.4",
+    "PyJWT==2.13.0",
+    "pyspnego==0.12.1",
+    "python-dateutil==2.9.0.post0",
+    "qiskit==2.5.1",
+    "qiskit-aer==0.17.2",
+    "qiskit-ibm-runtime==0.49.0",
+    "qiskit-qasm3-import==0.6.0",
+    "requests==2.34.2",
+    "requests_ntlm==1.3.0",
+    "rustworkx==0.18.1",
+    "samplomatic==0.20.0",
+    "scipy==1.17.1",
+    "six==1.17.0",
+    "sspilib==0.5.0",
+    "stevedore==5.9.0",
+    "typing-inspection==0.4.3",
+    "typing_extensions==4.16.0",
+    "urllib3==2.7.0"
+  ],
+  "honesty": "fake-backend runs use an archived real-device calibration snapshot and noise model, not live hardware; hardware runs are subject to drift between calibration and execution; no advantage claim is made or implied",
+  "purpose": "hardware-path TFIM audit: independent Qiskit implementation of the Appendix C circuits, cross-validated against the NumPy oracle and Ariadion's exported ideal distributions",
+  "results": {
+    "E_hat": -4.636913960253921,
+    "E_ref_oracle": -4.653959235148471,
+    "E_stderr": 0.025848291717476102,
+    "per_setting": {
+      "X": {
+        "energy": -3.367104247104247,
+        "stderr": 0.017969822568679437
+      },
+      "Z": {
+        "energy": -1.2698097131496733,
+        "stderr": 0.018580087770565638
+      }
+    }
+  },
+  "seed": 20260811,
+  "shots": {
+    "X": 6475,
+    "Z": 7042
+  },
+  "shots_scheme": "neyman",
+  "versions": {
+    "python": "3.11.4",
+    "qiskit": "2.5.1",
+    "qiskit_aer": "0.17.2",
+    "qiskit_ibm_runtime": "0.49.0"
+  }
+}

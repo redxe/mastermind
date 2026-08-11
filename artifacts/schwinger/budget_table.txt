@@ -1,0 +1,13 @@
+Schwinger model, N=4 staggered sites (OBC, links eliminated), x=0.6, mu=0.1, eps0=0.0
+Hilbert dim = 16; exact E0 = -0.844878091
+Pauli terms = 14; qubit-wise-commuting groups = 3
+<H> to +/-0.0084 (1% of |E0|), Neyman over groups: 26,978 shots
+
+    t   Re C exact   Im C exact  Trotter r      |err|
+  0.5     0.689019    -0.530663          2   6.15e-03
+  1.0     0.085792    -0.521447          4   1.24e-02
+  2.0     0.083353     0.474069          8   6.03e-03
+  3.0     0.896493     0.038332          8   2.00e-02
+  5.0     0.148447     0.346966         16   1.19e-02
+
+Hadamard-test budget: 1,112 shots/quadrature/point x 2 x 5 points = 11,120 shots (eps_meas=0.03, 1 sigma)

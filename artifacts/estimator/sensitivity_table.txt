@@ -1,0 +1,26 @@
+workload                 qubit model          budget    d   logQ    phys qubits    runtime  T-fac
+-------------------------------------------------------------------------------------------------
+screening_1000q_1e10T    qubit_gate_ns_e3        0.1   27   2091      3,448,518      1.2 d     12
+screening_1000q_1e10T    qubit_gate_ns_e3       0.01   29   2091      4,016,862      1.3 d     15
+screening_1000q_1e10T    qubit_gate_ns_e3      0.001   31   2091      4,734,942      1.4 d     13
+screening_1000q_1e10T    qubit_gate_ns_e4        0.1   13   2091        793,158    14.44 h     15
+screening_1000q_1e10T    qubit_gate_ns_e4       0.01   15   2091      1,035,590    16.67 h     14
+screening_1000q_1e10T    qubit_gate_ns_e4      0.001   15   2091      1,164,950    16.67 h     14
+screening_1000q_1e10T    qubit_maj_ns_e4         0.1   13   2091      2,406,252    10.83 h     15
+screening_1000q_1e10T    qubit_maj_ns_e4        0.01   15   2091      2,908,092    12.50 h     15
+screening_1000q_1e10T    qubit_maj_ns_e4       0.001   15   2091      2,908,092    12.50 h     15
+screening_1000q_1e10T    qubit_maj_ns_e6         0.1    7   2091        539,244     5.83 h     11
+screening_1000q_1e10T    qubit_maj_ns_e6        0.01    7   2091        759,804     5.83 h     15
+screening_1000q_1e10T    qubit_maj_ns_e6       0.001    7   2091        809,724     5.83 h     18
+tfim_audit_4q            qubit_gate_ns_e3        0.1    5     15         80,750     0.1 ms     40
+tfim_audit_4q            qubit_gate_ns_e3       0.01    7     15        173,950     0.1 ms     44
+tfim_audit_4q            qubit_gate_ns_e3      0.001    9     15        339,390     0.1 ms     52
+tfim_audit_4q            qubit_gate_ns_e4        0.1    3     15            324     0.0 ms      3
+tfim_audit_4q            qubit_gate_ns_e4       0.01    3     15         16,110     0.0 ms     44
+tfim_audit_4q            qubit_gate_ns_e4      0.001    5     15         52,750     0.1 ms     52
+tfim_audit_4q            qubit_maj_ns_e4         0.1    3     15        278,220     0.0 ms     80
+tfim_audit_4q            qubit_maj_ns_e4        0.01    5     15        350,460     0.1 ms     44
+tfim_audit_4q            qubit_maj_ns_e4       0.001    5     15      2,273,340     0.1 ms    104
+tfim_audit_4q            qubit_maj_ns_e6         0.1    1     15          1,500     0.0 ms     40
+tfim_audit_4q            qubit_maj_ns_e6        0.01    3     15         46,540     0.0 ms     44
+tfim_audit_4q            qubit_maj_ns_e6       0.001    3     15         54,860     0.0 ms     52
