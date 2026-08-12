@@ -70,7 +70,7 @@ The generating scripts and their environments:
 
 | Script | Purpose | Environment |
 |---|---|---|
-| `scripts/demo_tfim_audit.py` | Ariadion end-to-end audit (Appendix C) | Ariadion pinned at commit `d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f` + NumPy (install steps below) |
+| `scripts/demo_tfim_audit.py` | Ariadion end-to-end audit (the reproducible demonstration appendix) | Ariadion pinned at commit `d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f` + NumPy (install steps below) |
 | `scripts/hw_tfim_audit.py` | Qiskit cross-validation, calibrated-noise, and IBM hardware runs | `qiskit`, `qiskit-aer`, `qiskit-ibm-runtime`, NumPy |
 | `scripts/resource_estimate.py` | Resource-estimator sensitivity sweep (synthetic scenario) | `qdk` (runs locally, no Azure account) |
 | `scripts/schwinger_audit.py` | Bounded Schwinger-model instantiation (§9) | NumPy, SciPy |

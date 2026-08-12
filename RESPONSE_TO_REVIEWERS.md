@@ -1,5 +1,7 @@
 # Response to reviewers — simulated memorandum (Version 0.2 → 0.3)
 
+> Historical record. References to "Appendix C" below denote the reproducible demonstration appendix, which is lettered Appendix B in the current manuscript (the former notation appendix was removed from the compiled composition in a later pass).
+
 Dear Editor and Reviewers,
 
 Thank you for the detailed critique. Below, point by point, is what changed, what evidence backs each change, and what remains open. All line references are to the rebuilt PDF; all numbers are reproducible from `scripts/` in the artifact.

@@ -49,17 +49,7 @@ The final arrow is not housekeeping. Garbage left entangled with $x$ can reveal 
 
 \subsection{Five gates before a research proposal earns a score}
 
-It is tempting to assign every candidate a weighted ``quantum opportunity score.'' That creates false precision. A better process uses five gates. A proposal proceeds only if each gate has an explicit answer.
-
-\begin{enumerate}
-  \item \textbf{Mechanism gate.} Which known quantum primitive exploits a named property of the problem?
-  \item \textbf{Access gate.} How are data, coefficients, Hamiltonian terms, or graph neighborhoods supplied coherently, and at what cost?
-  \item \textbf{Output gate.} Is the deliverable compact enough to measure without reconstructing the whole state?
-  \item \textbf{Physical gate.} Does the compiled computation fit the qubits, topology, error budget, coherence, throughput, and wall-clock bound?
-  \item \textbf{Evidence gate.} Can the claim be falsified against strong classical baselines and validated beyond the classically simulable regime?
-\end{enumerate}
-
-If the access or output gate fails, a beautiful internal circuit is usually irrelevant. If the evidence gate fails, the project may still be good physics, compiler research, or device science, but it should not be sold as an application advantage.
+It is tempting to assign every candidate a weighted ``quantum opportunity score.'' That creates false precision. A better process is the gated sequence formalized as Algorithm~1 in \cref{sec:algorithm}: mechanism, access, output, physics, and evidence must each receive an explicit, falsifiable answer, and success at one gate cannot compensate for failure at another. If the access or output gate fails, a beautiful internal circuit is usually irrelevant. If the evidence gate fails, the project may still be good physics, compiler research, or device science, but it should not be sold as an application advantage.
 
 \begin{warningbox}[Signals that are not sufficient]
 The following facts do not, by themselves, identify a quantum opportunity: the dataset is large; the problem is NP-hard; a qubit can encode the variables; the state is entangled; the objective can be written as a QUBO; a toy circuit beats brute force; or the Hilbert space has dimension $2^n$. Hardness is a reason to look for structure. It is not the structure.

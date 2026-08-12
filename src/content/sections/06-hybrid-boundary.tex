@@ -11,6 +11,8 @@ T_C(\Pi)+T_{\mathrm{transfer}}(\Pi)+T_Q(\Pi)
 \end{equation}
 subject to bounds on total error, qubits, coherence, memory, success probability, energy, and deadline. Transfer includes data encoding, circuit submission, measurement, serialization, latency, and reinitialization. If a small quantum kernel must be called millions of times through a slow interface, its asymptotic elegance may become a systems failure.
 
+Equation~\eqref{eq:partition} is a design objective, not a claim that the global minimizer is analytically or efficiently available: the space of partitions is combinatorial and the cost terms are only partially known. Operationally, the audit compares a finite, predeclared set of candidate partitions, distinguishes measured costs from modeled ones, and reports sensitivity of the ordering to the modeled terms. If the available evidence cannot establish an ordering among the candidates, the partition is reported as unresolved rather than presented as $\Pi^{*}$.
+
 \begin{table}[htbp]
 \centering
 \small

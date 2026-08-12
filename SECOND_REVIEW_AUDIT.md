@@ -1,5 +1,7 @@
 # Second review audit — independent adversarial pass (2026-08-11)
 
+> Historical record. References to "Appendix C" below denote the reproducible demonstration appendix, which is lettered Appendix B in the current manuscript.
+
 Five-perspective audit of Version 0.2 (post first revision). Severity: **B** blocking, **M** major, **Mo** moderate, **E** editorial.
 
 Epistemic categories used below: [T] established theorem · [EA] engineering approximation · [EE] empirical evidence · [AS] author synthesis · [PH] provisional hypothesis · [AN] analogy.

@@ -48,6 +48,8 @@ Written as an executable procedure, the framework takes a candidate application 
 
 Appendix~\ref{app:demo} executes this procedure end-to-end on a deliberately small, exactly solvable instance---where it correctly returns \textsc{classical-only}---and on the phase-encoding proposal of \cref{sec:audits}, which fails at Gate~3.
 
+\paragraph{The gates are judgments, not measurements.} Each gate verdict is an auditable engineering judgment, not an observer-independent measurement. The procedure therefore requires, for every gate, a written record containing the evidence considered, the assumptions made, the identity of the classical baseline, the calculation performed, and the rationale for the decision. If qualified evaluators disagree on a gate and the disagreement cannot be resolved by that record, the audit returns \textsc{insufficient-evidence}; disagreement is never averaged into a favorable score. Inter-rater agreement for this procedure has not been measured: what the framework claims is procedural traceability---every verdict can be inspected and challenged---not evaluator invariance.
+
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
