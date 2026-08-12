@@ -70,11 +70,22 @@ The generating scripts and their environments:
 
 | Script | Purpose | Environment |
 |---|---|---|
-| `scripts/demo_tfim_audit.py` | Ariadion end-to-end audit (Appendix C) | Ariadion pinned at commit `d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f` + NumPy (install steps in Appendix C) |
+| `scripts/demo_tfim_audit.py` | Ariadion end-to-end audit (Appendix C) | Ariadion pinned at commit `d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f` + NumPy (install steps below) |
 | `scripts/hw_tfim_audit.py` | Qiskit cross-validation, calibrated-noise, and IBM hardware runs | `qiskit`, `qiskit-aer`, `qiskit-ibm-runtime`, NumPy |
 | `scripts/resource_estimate.py` | Resource-estimator sensitivity sweep (synthetic scenario) | `qdk` (runs locally, no Azure account) |
 | `scripts/schwinger_audit.py` | Bounded Schwinger-model instantiation (§9) | NumPy, SciPy |
 | `scripts/scale_sweep.py` | TFIM scale sweep with free-fermion baseline | NumPy, `qiskit`, `qiskit-aer` |
+
+Setup for the Ariadion audit (Windows syntax; Python 3.11). The sibling packages must be installed together in one command because the pinned SDK requires exact-version siblings not published on PyPI at that version:
+
+```text
+git clone https://github.com/redxe/ariadion.git && cd ariadion
+git checkout d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f
+python -m venv .venv
+.venv\Scripts\python -m pip install numpy packages\core packages\syntax packages\ir packages\noise packages\semantics packages\language packages\frontend-python packages\daidalon packages\theonoe packages\simulator packages\simulator-numpy packages\visualization packages\runtime packages\sdk
+.venv\Scripts\python <paper-repo>\scripts\demo_tfim_audit.py
+```
+
 
 Setup for the Qiskit/QDK scripts (Python 3.11):
 
