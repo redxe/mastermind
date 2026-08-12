@@ -17,12 +17,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install verification dependencies
+        run: python -m pip install -q pyyaml jsonschema
       - name: Compile all Python scripts
         run: python -m compileall -q scripts
       - name: Verify manuscript calculations
         run: python scripts/verify_calculations.py
       - name: Verify artifact checksums (cross-platform, byte-exact)
         run: python scripts/verify_artifacts.py
+      - name: Evidence-contract schema, hash-locking, and aggregation tests
+        run: python scripts/test_evidence_contract.py
+      - name: Validate evidence contracts
+        run: python scripts/evidence_contract.py validate examples/tfim-evidence-contract.yaml
+      - name: Verify protocol seal (if sealed)
+        shell: bash
+        run: |
+          if [ -f specs/protocol-seal.json ]; then
+            python scripts/evidence_contract.py verify-seal
+          else
+            echo "No protocol seal yet; skipping."
+          fi
 
   build-paper:
     name: Build LaTeX manuscript

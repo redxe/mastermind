@@ -1,0 +1,123 @@
+# Worked example zero: the Mastermind TFIM scale-sweep claim, audited under
+# mandatory baseline escalation. Validates against specs/evidence-contract.schema.json.
+
+contract_id: tfim-freefermion-baseline
+contract_version: "1.0"
+
+claim:
+  statement: >
+    Shot-budgeted quantum estimation of the ground-state energy of the open-chain
+    1D transverse-field Ising model (J=1, g=1) to accuracy epsilon = 0.05*n is
+    resource-competitive with the classical exact baseline as n grows.
+  estimand: >
+    Ratio of quantum shot budget (Neyman variance-target allocation, z^2 rule,
+    epsilon = 0.05*n, delta = 0.05) to classical wall-clock seconds for the exact
+    ground-state energy of the n-qubit open-chain TFIM, J = 1.0, g = 1.0,
+    for n in {4, 8, 12, 14, 16, 18, 20, 24}.
+  direction: method-comparison
+  source: "Mastermind manuscript, Appendix C scale-sweep paragraph (pre-correction wording)"
+
+corpus:
+  manifest: docs/research/claim-corpus-manifest.yaml
+  claim_key: tfim-freefermion-baseline
+
+workload:
+  description: >
+    Open-chain 1D TFIM, H = -J * sum Z_i Z_{i+1} - g * sum X_i, ground-state
+    energy estimation from Z-basis and X-basis measurement groups.
+  instance:
+    model: tfim-open-chain
+    J: 1.0
+    g: 1.0
+    sizes: [4, 8, 12, 14, 16, 18, 20, 24]
+    epsilon_rule: "0.05 * n"
+    reference_energy_n4: -4.758770483
+  generator: scripts/scale_sweep.py
+
+baseline_policy:
+  initial_baseline: "Dense Hamiltonian diagonalization (numpy.linalg.eigh), O(8^n) memory-bound"
+  escalation_rules:
+    - trigger: >
+        The instance family is integrable or otherwise admits a known
+        polynomial-time exact classical solution.
+      escalate_to: >
+        Exact free-fermion solution (Pfeuty 1970 / Lieb-Schultz-Mattis), O(n^3)
+        via SVD of the coupling matrix, as implemented in
+        scripts/scale_sweep.py::free_fermion_ground_energy.
+    - trigger: >
+        The instance family is nonintegrable and exceeds exact methods.
+      escalate_to: >
+        State-of-the-art tensor-network (DMRG/MPS) baseline with matched accuracy
+        target and reported wall-clock.
+  strongest_known_required: true
+
+budget:
+  quantum:
+    total_shots: 30000
+    device_days: 0
+    backends: ["aer-simulator"]
+  classical:
+    wall_clock_hours: 1.0
+    hardware: "single workstation, 20 threads"
+
+metrics:
+  - name: energy-accuracy
+    definition: >
+      |E_estimated - E_baseline| for each n where the baseline is computable,
+      where E_baseline is the escalated (free-fermion) exact energy.
+    tolerance: { value: 1.0, kind: standard-errors }
+    required_for_support: true
+  - name: cost-crossover
+    definition: >
+      Sign of d/dn [quantum shot budget / classical baseline wall-clock]: the claim
+      direction requires the quantum budget to grow no faster than the strongest
+      classical baseline cost over the declared size range.
+    tolerance: { value: 0.05, kind: relative }
+    required_for_support: true
+
+allowed_variations:
+  dimensions:
+    - name: baseline_implementation
+      values: ["dense-eigh", "free-fermion-svd"]
+    - name: transpiler_seed
+      values: [1234, 5678, 9012]
+    - name: sampling_seed
+      values: [1234, 5678]
+
+decision_rules:
+  confidence_model:
+    alpha: 0.05
+    multiple_comparisons: bonferroni
+    uncertainty_sources: [shot-noise, baseline]
+  per_variation_rule: >
+    supported iff both metrics pass tolerance under the escalated baseline;
+    reversed iff cost-crossover flips sign at 95% confidence under the escalated
+    baseline; a variation using only the pre-escalation dense baseline is at most
+    indeterminate regardless of metric values.
+  aggregation_rule: standard-v1
+
+missing_evidence_policy:
+  required_artifacts:
+    - artifacts/scale/sweep.json
+    - artifacts/scale/sweep_table.txt
+    - artifacts/scale/manifest.json
+    - artifacts/scale/SHA256SUMS.txt
+  on_missing: not-auditable
+
+outcome_taxonomy: ["Stable", "Conditionally Stable", "Unresolved", "Reversed", "Not Auditable"]
+
+environment:
+  git_commit: ceb3884
+  python: "3.11.4"
+  packages:
+    qiskit: "2.5.1"
+    qiskit-aer: "0.17.2"
+    numpy: "2.4.6"
+    scipy: "1.17.1"
+
+notes: >
+  Expected evaluation (recorded here as a prediction, not a result): the claim is
+  Reversed under the escalated free-fermion baseline for this integrable family --
+  which is exactly the point. The original wording survived only because the audit
+  was run against a knowably-weak baseline; the escalation rule makes that failure
+  mode structurally impossible.

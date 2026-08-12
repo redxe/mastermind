@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/redxe/mastermind/specs/evidence-contract.schema.json",
+  "title": "Evidence Contract",
+  "description": "A prospective, executable claim-support contract for a quantum-vs-classical (or quantum-work) claim. Every field that could influence the outcome must be frozen and hash-sealed BEFORE any outcome-bearing computation is evaluated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "claim",
+    "corpus",
+    "workload",
+    "baseline_policy",
+    "budget",
+    "metrics",
+    "allowed_variations",
+    "decision_rules",
+    "missing_evidence_policy",
+    "outcome_taxonomy",
+    "environment"
+  ],
+  "properties": {
+    "contract_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$",
+      "description": "Stable identifier, lowercase kebab-case."
+    },
+    "contract_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "estimand", "direction", "source"],
+      "properties": {
+        "statement": {
+          "type": "string",
+          "minLength": 20,
+          "description": "The exact scientific claim under audit, in one sentence, as it would appear in a paper."
+        },
+        "estimand": {
+          "type": "string",
+          "minLength": 10,
+          "description": "The precise quantity being estimated or compared (observable, distribution distance, cost ratio, ...), including units and instance definition."
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["quantum-advantage", "quantum-adequacy", "no-advantage", "method-comparison", "correctness"],
+          "description": "What kind of conclusion the claim asserts."
+        },
+        "source": {
+          "type": "string",
+          "description": "Where the claim originates (paper section, DOI, arXiv id, or 'prospective')."
+        }
+      }
+    },
+    "corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest", "claim_key"],
+      "properties": {
+        "manifest": {
+          "type": "string",
+          "description": "Repo-relative path to the claim-corpus manifest this contract belongs to."
+        },
+        "claim_key": {
+          "type": "string",
+          "description": "Key of this claim inside the corpus manifest."
+        }
+      }
+    },
+    "workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "instance"],
+      "properties": {
+        "description": { "type": "string" },
+        "instance": {
+          "type": "object",
+          "description": "Exact problem instance parameters. Free-form keys, but values must be scalars, arrays, or repo-relative artifact paths.",
+          "minProperties": 1
+        },
+        "generator": {
+          "type": "string",
+          "description": "Repo-relative path to the script that reproduces the instance and reference values."
+        }
+      }
+    },
+    "baseline_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initial_baseline", "escalation_rules", "strongest_known_required"],
+      "properties": {
+        "initial_baseline": {
+          "type": "string",
+          "description": "The classical baseline the audit starts from (method + implementation)."
+        },
+        "escalation_rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["trigger", "escalate_to"],
+            "properties": {
+              "trigger": {
+                "type": "string",
+                "description": "Condition under which the baseline must be replaced (e.g. 'instance family is integrable', 'a polynomial-time exact method is known')."
+              },
+              "escalate_to": {
+                "type": "string",
+                "description": "The stronger baseline that must be used when the trigger holds."
+              }
+            }
+          }
+        },
+        "strongest_known_required": {
+          "type": "boolean",
+          "description": "If true, the claim is Not Auditable unless the strongest known classical baseline for the instance family was actually run or cited with matched inputs."
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["quantum", "classical"],
+      "properties": {
+        "quantum": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "total_shots": { "type": "integer", "minimum": 0 },
+            "device_days": { "type": "number", "minimum": 0 },
+            "backends": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "classical": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "wall_clock_hours": { "type": "number", "minimum": 0 },
+            "hardware": { "type": "string" }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "definition", "tolerance"],
+        "properties": {
+          "name": { "type": "string" },
+          "definition": {
+            "type": "string",
+            "description": "Unambiguous computable definition, including normalization and sign conventions."
+          },
+          "tolerance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["value", "kind"],
+            "properties": {
+              "value": { "type": "number", "exclusiveMinimum": 0 },
+              "kind": { "type": "string", "enum": ["absolute", "relative", "standard-errors"] }
+            }
+          },
+          "required_for_support": {
+            "type": "boolean",
+            "default": true,
+            "description": "If true, the claim cannot be Supported in any variation where this metric fails its tolerance."
+          }
+        }
+      }
+    },
+    "allowed_variations": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The experimental choices that may vary WITHOUT changing the scientific claim. Everything not listed here is frozen.",
+      "required": ["dimensions"],
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "values"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "enum": ["compiler", "transpiler_seed", "qubit_mapping", "noise_model", "sampling_seed", "mitigation", "backend", "calibration_window", "baseline_implementation"]
+              },
+              "values": {
+                "type": "array",
+                "minItems": 1,
+                "description": "Explicit enumeration of allowed values; no open-ended variation."
+              }
+            }
+          }
+        }
+      }
+    },
+    "decision_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confidence_model", "per_variation_rule", "aggregation_rule"],
+      "properties": {
+        "confidence_model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["alpha"],
+          "properties": {
+            "alpha": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+            "multiple_comparisons": {
+              "type": "string",
+              "enum": ["none", "bonferroni", "holm", "benjamini-hochberg"],
+              "default": "bonferroni"
+            },
+            "uncertainty_sources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["shot-noise", "run-to-run", "calibration", "drift", "mitigation-model", "baseline"]
+              },
+              "description": "Sources that MUST be included in reported uncertainty. Omitting a listed source makes the variation Indeterminate."
+            }
+          }
+        },
+        "per_variation_rule": {
+          "type": "string",
+          "description": "Deterministic rule mapping one variation's results to supported | reversed | indeterminate."
+        },
+        "aggregation_rule": {
+          "type": "string",
+          "enum": ["standard-v1"],
+          "description": "How per-variation verdicts map to the final outcome. standard-v1: all supported -> Stable; supported + indeterminate, no reversed -> Conditionally Stable; supported + reversed -> Unresolved; all reversed (allowing indeterminate) -> Reversed; required evidence missing -> Not Auditable."
+        }
+      }
+    },
+    "missing_evidence_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_artifacts", "on_missing"],
+      "properties": {
+        "required_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Artifact classes that must exist for the claim to be auditable (e.g. raw counts, calibration snapshot, baseline outputs, compilation trace)."
+        },
+        "on_missing": {
+          "type": "string",
+          "enum": ["not-auditable", "indeterminate-variation"],
+          "description": "Whether a missing artifact voids the whole audit or only the affected variation."
+        }
+      }
+    },
+    "outcome_taxonomy": {
+      "type": "array",
+      "description": "Fixed; present in the contract so the sealed document is self-contained.",
+      "const": ["Stable", "Conditionally Stable", "Unresolved", "Reversed", "Not Auditable"]
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["git_commit", "python", "packages"],
+      "properties": {
+        "git_commit": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+        "python": { "type": "string" },
+        "packages": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string" },
+          "description": "Package name -> pinned version for every package that can influence results."
+        }
+      }
+    },
+    "notes": { "type": "string" }
+  }
+}

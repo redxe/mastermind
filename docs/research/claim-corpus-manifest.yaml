@@ -1,0 +1,64 @@
+# Claim corpus manifest — Phase A pilot (8-12 claims).
+# Frozen at protocol seal time. Selection/exclusion rules below are part of the seal.
+# Claims marked status: placeholder must be filled in BEFORE sealing; sealing with
+# placeholders present is rejected by the CLI.
+
+corpus_id: egqe-pilot-a
+protocol: docs/research/locked-audit-protocol.md
+schema: specs/evidence-contract.schema.json
+
+selection_rules:
+  - Claims must assert a quantum-vs-classical comparison, quantum adequacy, or a
+    method comparison with a computable estimand.
+  - The instance or a faithful reduction must be runnable within the declared budget
+    (classical baseline included).
+  - At least one claim from each of quantum simulation, optimization, and error
+    mitigation must be present before Phase B.
+  - >
+    Self-authored claims (Mastermind) are permitted in the pilot but must be
+    flagged "self_authored: true" and cannot exceed 25% of the Phase B corpus.
+
+exclusion_rules:
+  - Claims whose evidence is inaccessible in principle (proprietary hardware only,
+    no raw data, no instance definition) are excluded and logged here with reason.
+  - Claims requiring >2 device-days of QPU time are deferred to Phase B or later.
+  - Asymptotic-only claims with no finite instance are excluded.
+
+claims:
+  tfim-freefermion-baseline:
+    contract: examples/tfim-evidence-contract.yaml
+    self_authored: true
+    status: drafted
+    summary: >
+      Worked example zero. The Mastermind scale-sweep claim that quantum estimation
+      of the 1D TFIM ground-state energy competes with the classical baseline is
+      audited under mandatory baseline escalation from dense diagonalization to the
+      exact Pfeuty (1970) free-fermion solution.
+  claim-02:
+    contract: null
+    status: placeholder
+    summary: "Quantum simulation claim (external), to be selected."
+  claim-03:
+    contract: null
+    status: placeholder
+    summary: "Quantum simulation claim (external), to be selected."
+  claim-04:
+    contract: null
+    status: placeholder
+    summary: "Optimization claim (external), to be selected."
+  claim-05:
+    contract: null
+    status: placeholder
+    summary: "Optimization claim (external), to be selected."
+  claim-06:
+    contract: null
+    status: placeholder
+    summary: "Error-mitigation claim (external), to be selected."
+  claim-07:
+    contract: null
+    status: placeholder
+    summary: "Error-mitigation claim (external), to be selected."
+  claim-08:
+    contract: null
+    status: placeholder
+    summary: "Cross-compiler method comparison, to be selected."
