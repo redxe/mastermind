@@ -37,7 +37,7 @@ Legend: ✅ done in this pass · 🔶 partially done (TODO marker inserted in so
 | 12 | DNA phase ambiguity | 08 | Relative vs. global phase distinguished; QFT output and costs stated; classical comparison retained; literature TODO | 🔶 |
 | 13 | DNA drift into association | 08 | Speculative paragraph shortened and labeled future hypothesis generation | ✅ |
 | 14 | Scheduling lacks formulation | 08 | Reframed as warning example, not case study; full model marked TODO | 🔶 |
-| 15 | Ariadion self-promotional | 08, app C | Removed from central narrative; Appendix C now executes the TFIM demonstration through Ariadion as an author-developed, version-pinned artifact (commit d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f, 0.1.0rc2), cross-validated by an independent NumPy oracle; density-path omissions declared | ✅ |
+| 15 | Ariadion self-promotional | 08, app C | Removed from central narrative; Appendix C now executes the TFIM demonstration through Ariadion as an author-developed, version-pinned artifact (commit e4c56fb16b35382c95ba54d4b2b9f1fd2c684683, 0.1.0rc2), cross-validated by an independent NumPy oracle; density-path omissions declared | ✅ |
 | 16 | HEP too broad | 09 | Bounded-model (Schwinger-type) demonstration marked TODO; claims scoped | 🔶 |
 | 17 | GW inner product underspecified | 10 | Replaced with noise-weighted inner product using detector PSD; assumptions listed | ✅ |
 | 18 | Sensing scope confusion | 10 | Explicit statement: sensing/communication outside the processor framework; separate resource contract listed | ✅ |

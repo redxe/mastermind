@@ -8,7 +8,7 @@ SECTION A  Classical oracle (pure NumPy; imports NO Ariadion code).
            setting distributions, and the audit arithmetic (shot bounds,
            coverage experiment, screening, decision).
 SECTION B  Ariadion execution path (author-developed, version-pinned SDK,
-           commit d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f, 0.1.0rc2).
+           commit e4c56fb16b35382c95ba54d4b2b9f1fd2c684683, 0.1.0rc2).
            Explicit preparation + measurement programs, exact state-vector
            runs, seeded sampled runs, density-matrix runs under a declared
            toy noise model, Theonoe inspection, and noise-impact reports.
@@ -48,7 +48,7 @@ from pathlib import Path
 import numpy as np
 
 MASTER_SEED = 20260811
-ARIADION_COMMIT = "d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f"
+ARIADION_COMMIT = "e4c56fb16b35382c95ba54d4b2b9f1fd2c684683"
 ARIADION_VERSION = "0.1.0rc2"
 
 # Fixed ansatz angles (chosen once, offline, by scripts/_choose_angles.py;

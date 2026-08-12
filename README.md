@@ -64,23 +64,25 @@ All evidence artifacts are archived under `artifacts/` with per-directory `SHA25
 ```text
 python scripts/verify_artifacts.py
 python scripts/verify_calculations.py
+python scripts/make_figures.py --check
 ```
 
 The generating scripts and their environments:
 
 | Script | Purpose | Environment |
 |---|---|---|
-| `scripts/demo_tfim_audit.py` | Ariadion end-to-end audit (the reproducible demonstration appendix) | Ariadion pinned at commit `d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f` + NumPy (install steps below) |
+| `scripts/demo_tfim_audit.py` | Ariadion end-to-end audit (the reproducible demonstration appendix) | Ariadion pinned at commit `e4c56fb16b35382c95ba54d4b2b9f1fd2c684683` + NumPy (install steps below) |
 | `scripts/hw_tfim_audit.py` | Qiskit cross-validation, calibrated-noise, and IBM hardware runs | `qiskit`, `qiskit-aer`, `qiskit-ibm-runtime`, NumPy |
 | `scripts/resource_estimate.py` | Resource-estimator sensitivity sweep (synthetic scenario) | `qdk` (runs locally, no Azure account) |
 | `scripts/schwinger_audit.py` | Bounded Schwinger-model instantiation (§9) | NumPy, SciPy |
 | `scripts/scale_sweep.py` | TFIM scale sweep with free-fermion baseline | NumPy, `qiskit`, `qiskit-aer` |
+| `scripts/make_figures.py` | Regenerates the manuscript figure data from the archived artifacts (`--check` fails if stale) | Standard library only |
 
 Setup for the Ariadion audit (Windows syntax; Python 3.11). The sibling packages must be installed together in one command because the pinned SDK requires exact-version siblings not published on PyPI at that version:
 
 ```text
 git clone https://github.com/redxe/ariadion.git && cd ariadion
-git checkout d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f
+git checkout e4c56fb16b35382c95ba54d4b2b9f1fd2c684683
 python -m venv .venv
 .venv\Scripts\python -m pip install numpy packages\core packages\syntax packages\ir packages\noise packages\semantics packages\language packages\frontend-python packages\daidalon packages\theonoe packages\simulator packages\simulator-numpy packages\visualization packages\runtime packages\sdk
 .venv\Scripts\python <paper-repo>\scripts\demo_tfim_audit.py

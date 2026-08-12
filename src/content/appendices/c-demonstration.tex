@@ -1,7 +1,7 @@
 % !TeX root = ../../../main.tex
 \section{A Reproducible Execution of the Audit Procedure}\label{app:demo}
 
-This appendix reports one complete, deliberately small execution of Algorithm~1 (\cref{sec:algorithm}) and one quantitative rejection case, produced by \texttt{scripts/demo\_tfim\_audit.py} in the paper's artifact; \texttt{scripts/verify\_calculations.py} independently reproduces every number quoted in \cref{sec:resources}. The quantum-execution portion runs through \emph{Ariadion}, an \textbf{author-developed, version-pinned research software artifact} (commit \texttt{d68eb2f2c365d9e6bf616ffe3ad6ec356528d79f}, version 0.1.0rc2). Because the simulator and the paper share an author, the artifact is \emph{never its own sole validation}: every Ariadion output is cross-checked against a separately implemented pure-NumPy classical oracle that performs exact diagonalization and an independent state-vector simulation of the same circuit, importing no Ariadion code, and the same circuits are independently rebuilt and executed in Qiskit. The evidence in this appendix falls into three distinct classes that must not be conflated: (i) \emph{classical simulation} of an ideal or declared-toy-noise device, which validates the audit procedure and the shot-allocation mathematics; (ii) independent Qiskit cross-validation, including simulation against a noise model built from a real device's calibration snapshot; and (iii) a single uncorrected execution on one physical device, which is minimal empirical evidence with shot-noise-only uncertainty and must not be read more broadly. None of it is an advantage claim. The instance is chosen so that the honest audit outcome is \textsc{classical-only}---a framework that cannot reject its own demonstration instance would not be worth trusting.
+This appendix reports one complete, deliberately small execution of Algorithm~1 (\cref{sec:algorithm}) and one quantitative rejection case, produced by \texttt{scripts/demo\_tfim\_audit.py} in the paper's artifact; \texttt{scripts/verify\_calculations.py} independently reproduces every number quoted in \cref{sec:resources}. The quantum-execution portion runs through \emph{Ariadion}, an \textbf{author-developed, version-pinned research software artifact} (commit \texttt{e4c56fb16b35382c95ba54d4b2b9f1fd2c684683}, version 0.1.0rc2). Because the simulator and the paper share an author, the artifact is \emph{never its own sole validation}: every Ariadion output is cross-checked against a separately implemented pure-NumPy classical oracle that performs exact diagonalization and an independent state-vector simulation of the same circuit, importing no Ariadion code, and the same circuits are independently rebuilt and executed in Qiskit. The evidence in this appendix falls into three distinct classes that must not be conflated: (i) \emph{classical simulation} of an ideal or declared-toy-noise device, which validates the audit procedure and the shot-allocation mathematics; (ii) independent Qiskit cross-validation, including simulation against a noise model built from a real device's calibration snapshot; and (iii) a single uncorrected execution on one physical device, which is minimal empirical evidence with shot-noise-only uncertainty and must not be read more broadly. None of it is an advantage claim. The instance is chosen so that the honest audit outcome is \textsc{classical-only}---a framework that cannot reject its own demonstration instance would not be worth trusting.
 
 \subsection{Acceptance audit instance: 4-qubit transverse-field Ising model}
 
@@ -33,8 +33,85 @@ Beyond the Ariadion runs above, three further evidence sets are archived alongsi
 
 \emph{Measured-calibration noise.} The circuits were transpiled (optimization level 3) to IBM's Heron-class \texttt{torino} topology and executed against a noise model constructed from that device's actual calibration snapshot---per-gate error rates, $T_1$/$T_2$, and readout errors, all archived verbatim in \texttt{artifacts/hardware/}. The result is consistent with the failure mode the framework describes for uncorrected hardware: $\hat{E}=-4.490\pm0.026$, a $+0.164$ bias toward zero, against a calibration-derived Gate-4 screen of $P_0=0.940$ computed per executed operation from the measured error rates (versus $0.887$ from the representative rates used in \cref{sec:resources}). Counts, transpiled QASM3, calibration snapshots, job identifiers, and SHA-256 manifests are archived per backend.
 
-\emph{Physical-hardware execution.} The identical script's hardware path was run once on IBM's 156-qubit Heron-class \texttt{ibm\_kingston} processor (open plan, least-busy selection) at the full Neyman budget (7{,}042 $Z$-setting and 6{,}475 $X$-setting shots). The result: $\hat{E}=-4.432\pm0.027$ against $E_{\mathrm{ref}}=-4.654$, a $+0.222$ bias toward zero---consistent with the failure signature the audit describes for uncorrected hardware, observed on a physical device with a favorable device-day Gate-4 screen of $P_0=0.971$ computed from \texttt{kingston}'s calibration at run time. The quoted uncertainty is the archived shot-noise standard error only; it excludes calibration drift, temporal correlations, crosstalk, and other systematic effects, which a single uninterleaved run cannot separate from the bias. The noise simulation in the preceding paragraph used a \emph{different} device's calibration (\texttt{torino}), so the two numbers illustrate the same qualitative failure mode but do not constitute a controlled model-versus-device comparison; that experiment---a matched \texttt{kingston}-snapshot simulation against repeated or interleaved \texttt{kingston} blocks, with shot-noise and between-run variation reported separately---is specified but is not part of this paper's evidence. Raw counts, transpiled QASM3, the calibration snapshot, IBM job identifiers, and SHA-256 manifests are archived in \texttt{artifacts/hardware/hardware\_ibm\_kingston/}.
+\emph{Physical-hardware execution.} The identical script's hardware path was run once on IBM's 156-qubit Heron-class \texttt{ibm\_kingston} processor (open plan, least-busy selection) at the full Neyman budget (7{,}042 $Z$-setting and 6{,}475 $X$-setting shots). The result: $\hat{E}=-4.432\pm0.027$ against $E_{\mathrm{ref}}=-4.654$, a $+0.222$ bias toward zero---consistent with the failure signature the audit describes for uncorrected hardware, observed on a physical device with a favorable device-day Gate-4 screen of $P_0=0.971$ computed from \texttt{kingston}'s calibration at run time. The quoted uncertainty is the archived shot-noise standard error only; it excludes calibration drift, temporal correlations, crosstalk, and other systematic effects, which a single uninterleaved run cannot separate from the bias. The noise simulation in the preceding paragraph used a \emph{different} device's calibration (\texttt{torino}), so the two numbers illustrate the same qualitative failure mode but do not constitute a controlled model-versus-device comparison; that experiment---a matched \texttt{kingston}-snapshot simulation against repeated or interleaved \texttt{kingston} blocks, with shot-noise and between-run variation reported separately---is specified but is not part of this paper's evidence. Raw counts, transpiled QASM3, the calibration snapshot, IBM job identifiers, and SHA-256 manifests are archived in \texttt{artifacts/hardware/hardware\_ibm\_kingston/}. \Cref{fig:hardware-energies} plots all three execution contexts against the exact reference.
 
-\emph{Scale behavior.} A sweep of the same audit pipeline over chain lengths $n=4$ to $24$ (\texttt{artifacts/scale/}) records where the classical baselines actually stand. The one-dimensional transverse-field Ising model is exactly solvable by a free-fermion transformation \citep{pfeuty1970}, so the strongest matched classical opponent computes the exact ground energy in $O(n^{3})$ time---milliseconds at every $n$ in the sweep, with no wall anywhere in reach; the sweep implements this baseline and cross-checks it against dense diagonalization at every $n\leq14$. Generic dense diagonalization ($O(8^{n})$ time, $O(4^{n})$ memory), shown for contrast, exhausts practicality near $n=14$ (about two minutes)---a property of the structure-blind method, \emph{not} of the instance family. Statevector evaluation stays within seconds through $n=24$, sampled simulation at 4{,}096 shots stays sub-second, and the measurement budgets remain modest under a constant per-site precision rule: the worst-case Hoeffding allocation \eqref{eq:worstcase-shots} at $\delta=0.05$ and the Neyman variance-target allocation \eqref{eq:neyman-shots} at $z_{1-\delta/2}$ are both computed per $n$ and archived with their formulas in the manifest. Any claim that this family walls classically would be false; a scale claim for the audit pipeline on a genuinely hard family requires a nonintegrable instance benchmarked against tensor-network methods, which this sweep does not attempt.
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.88\textwidth,
+  height=5.6cm,
+  xmin=0.4, xmax=3.6,
+  xtick={1,2,3},
+  xticklabels={%
+    Aer\\ideal sampling,
+    calibrated noise\\\texttt{torino} snapshot,
+    physical device\\\texttt{ibm\_kingston}},
+  x tick label style={font=\footnotesize,align=center,text width=3.1cm},
+  ylabel={energy estimate $\hat{E}$},
+  ylabel style={font=\small},
+  y tick label style={font=\footnotesize},
+  ymin=-4.72, ymax=-4.36,
+  ytick={-4.7,-4.6,-4.5,-4.4},
+  grid=major,
+  grid style={draw=softgray},
+  axis line style={draw=ink},
+  tick style={draw=ink},
+  clip=false
+]
+\addplot[quantumdark,dashed,thick,forget plot] table[x=index,y=eref] {src/figures/hardware-energies.dat};
+\node[anchor=west,font=\footnotesize,text=quantumdark] at (axis cs:3.05,-4.654) {$E_{\mathrm{ref}}=-4.654$};
+\addplot+[
+  only marks,
+  mark=*,
+  mark size=2.2pt,
+  color=quantum,
+  error bars/.cd, y dir=both, y explicit,
+  error bar style={line width=0.8pt,draw=quantum}
+] table[x=index,y=ehat,y error=stderr] {src/figures/hardware-energies.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{Archived energy estimates for the four-qubit demonstration instance across three execution contexts, with the exact reference energy $E_{\mathrm{ref}}$ (dashed). Error bars are the archived shot-noise standard errors only; they exclude calibration drift, temporal correlations, and crosstalk, so the two noisy points must not be read as a controlled model-versus-device comparison---the noise model and the device are different processors. The monotone drift toward zero is the failure signature the audit anticipates for uncorrected hardware, not an advantage result. Every plotted value is regenerated from \texttt{artifacts/hardware/} by \texttt{scripts/make\_figures.py}.}
+\label{fig:hardware-energies}
+\end{figure}
+
+\emph{Scale behavior.} A sweep of the same audit pipeline over chain lengths $n=4$ to $24$ (\texttt{artifacts/scale/}) records where the classical baselines actually stand. The one-dimensional transverse-field Ising model is exactly solvable by a free-fermion transformation \citep{pfeuty1970}, so the strongest matched classical opponent computes the exact ground energy in $O(n^{3})$ time---milliseconds at every $n$ in the sweep, with no wall anywhere in reach; the sweep implements this baseline and cross-checks it against dense diagonalization at every $n\leq14$. Generic dense diagonalization ($O(8^{n})$ time, $O(4^{n})$ memory), shown for contrast, exhausts practicality near $n=14$ (about two minutes)---a property of the structure-blind method, \emph{not} of the instance family. Statevector evaluation stays within seconds through $n=24$, sampled simulation at 4{,}096 shots stays sub-second, and the measurement budgets remain modest under a constant per-site precision rule: the worst-case Hoeffding allocation \eqref{eq:worstcase-shots} at $\delta=0.05$ and the Neyman variance-target allocation \eqref{eq:neyman-shots} at $z_{1-\delta/2}$ are both computed per $n$ and archived with their formulas in the manifest. Any claim that this family walls classically would be false; a scale claim for the audit pipeline on a genuinely hard family requires a nonintegrable instance benchmarked against tensor-network methods, which this sweep does not attempt. \Cref{fig:scale-sweep} plots the archived timings.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.88\textwidth,
+  height=6.4cm,
+  xlabel={chain length $n$},
+  ylabel={wall-clock time (s)},
+  xlabel style={font=\small},
+  ylabel style={font=\small},
+  tick label style={font=\footnotesize},
+  xmin=3, xmax=25,
+  xtick={4,8,12,16,20,24},
+  ymode=log,
+  ymin=1e-5, ymax=1e3,
+  grid=major,
+  grid style={draw=softgray},
+  axis line style={draw=ink},
+  tick style={draw=ink},
+  legend style={font=\footnotesize,at={(0.02,0.98)},anchor=north west,draw=softgray},
+  legend cell align=left,
+  unbounded coords=jump
+]
+\addplot[quantum,thick,mark=*,mark size=1.6pt] table[x=n,y=freefermion] {src/figures/scale-timings.dat};
+\addlegendentry{free-fermion baseline, $O(n^{3})$}
+\addplot[warning,thick,mark=square*,mark size=1.6pt] table[x=n,y=exactdiag] {src/figures/scale-timings.dat};
+\addlegendentry{dense diagonalization, $O(8^{n})$}
+\addplot[quantumdark,thick,dashed,mark=triangle*,mark size=2pt] table[x=n,y=statevector] {src/figures/scale-timings.dat};
+\addlegendentry{statevector evaluation}
+\addplot[ink,thick,dotted,mark=diamond*,mark size=2pt] table[x=n,y=aer4096] {src/figures/scale-timings.dat};
+\addlegendentry{sampled simulation, 4{,}096 shots}
+\end{axis}
+\end{tikzpicture}
+\caption{Archived scale sweep. The matched classical opponent---the exact free-fermion solution---stays in the sub-millisecond band across the whole range and shows no wall. Dense diagonalization, plotted only for contrast, leaves the range near $n=14$; that is a property of the structure-blind method, not of the instance family, and it is why a crossover argued against dense diagonalization would be an artifact of choosing a weak baseline. The sweep is therefore evidence \emph{against} a quantum case for this family. Regenerated from \texttt{artifacts/scale/} by \texttt{scripts/make\_figures.py}; the dense-diagonalization series is not computed beyond $n=14$.}
+\label{fig:scale-sweep}
+\end{figure}
 
 What this appendix still does \emph{not} establish: quantum advantage of any kind (the hardware run demonstrates the audit pipeline and its noise triage on a physical device, not a speedup), a controlled calibration-model-versus-device comparison (the noise simulation and the hardware run used different devices), error-mitigated or error-corrected hardware performance, systematic-uncertainty characterization beyond shot noise, and the framework's value on instances where the decision is genuinely uncertain. That harder demonstration is specified in \cref{sec:audits}.

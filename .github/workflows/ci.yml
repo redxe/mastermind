@@ -25,6 +25,8 @@ jobs:
         run: python scripts/verify_calculations.py
       - name: Verify artifact checksums (cross-platform, byte-exact)
         run: python scripts/verify_artifacts.py
+      - name: Verify manuscript figures match the archived artifacts
+        run: python scripts/make_figures.py --check
       - name: Evidence-contract schema, hash-locking, and aggregation tests
         run: python scripts/test_evidence_contract.py
       - name: CHUBE reference implementation tests (prospective research track)

@@ -10,3 +10,6 @@ artifacts/** -text
 *.yml text eol=lf
 *.yaml text eol=lf
 *.json text eol=lf
+# Generated figure data is compared byte-for-byte against the archived
+# artifacts by scripts/make_figures.py --check, so keep it LF everywhere.
+*.dat text eol=lf
