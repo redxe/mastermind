@@ -17,8 +17,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install verification dependencies
-        run: python -m pip install -q pyyaml jsonschema numpy scipy
+      - name: Install verification dependencies (pinned)
+        run: python -m pip install -q -r requirements-ci.txt
       - name: Compile all Python scripts
         run: python -m compileall -q scripts
       - name: Verify manuscript calculations

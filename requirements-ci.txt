@@ -1,0 +1,6 @@
+# Pinned CI verification dependencies (Python 3.11).
+# Versions match the local .venv-qiskit environment used for authoring.
+pyyaml==6.0.3
+jsonschema==4.26.0
+numpy==2.4.6
+scipy==1.17.1

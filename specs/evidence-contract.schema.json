@@ -192,7 +192,7 @@
             "properties": {
               "name": {
                 "type": "string",
-                "enum": ["compiler", "transpiler_seed", "qubit_mapping", "noise_model", "sampling_seed", "mitigation", "backend", "calibration_window", "baseline_implementation"]
+                "enum": ["compiler", "transpiler_seed", "qubit_mapping", "noise_model", "sampling_seed", "mitigation", "backend", "calibration_window", "baseline_implementation", "architecture_variant", "encoding", "memory_qubits", "task", "depth", "parameter_sharing", "uncomputation", "noise_rate", "sequence_length"]
               },
               "values": {
                 "type": "array",

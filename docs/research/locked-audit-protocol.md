@@ -54,6 +54,14 @@ the schema, the corpus manifest, and every contract file.
 
 ## 4. Per-variation verdicts
 
+Verdicts are **derived by the evaluator** from recorded metrics — never supplied
+by the caller. Results must validate against
+[evidence-results.schema.json](../../specs/evidence-results.schema.json), must
+cover the complete Cartesian product of the declared allowed-variation values
+(duplicates, unknown dimensions, and undeclared values are rejected), and must
+include explicit baseline identity, verifiable evidence, and matched inputs.
+Structural violations fail closed as Not Auditable.
+
 For each enumerated variation combination:
 
 - **supported** — every metric with `required_for_support: true` is within tolerance,

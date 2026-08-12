@@ -271,9 +271,14 @@ until the exact combination has been checked against this literature:
   variant C should be positioned relative to partitioned/Margolus QCA.
 - **Quantum recurrent/sequential models:** Bausch, *Recurrent Quantum Neural
   Networks*, NeurIPS 2020, arXiv:2006.14619; and the tensor-network view of
-  sequential quantum models (bounded-memory quantum sequence models correspond
-  to matrix-product operators with bond dimension 2^m for m memory qubits —
-  which is exactly why the MPS baseline in the experiment spec is mandatory).
+  sequential quantum models. Representation assumptions matter here: a
+  bounded-memory quantum sequence model whose m-qubit memory stays **pure and
+  coherent** corresponds to a tensor network with bond dimension at most 2^m;
+  if the memory is a **mixed state propagated through channels** (the variant-B
+  setting, where the data register is traced out each step), the natural
+  vectorized (superoperator) representation has bond dimension up to 4^m.
+  Either way the bond dimension is finite and known in advance — which is
+  exactly why the matched MPS/MPO baseline in the experiment spec is mandatory.
 - **Quantum language models / contextuality:** e.g. quantum-inspired and
   explicitly quantum sequence models for language tasks; to be surveyed
   properly before any novelty statement (deliberately left as an open
@@ -300,8 +305,11 @@ Recorded now so the eventual paper cannot quietly drop them:
    7×K feature matrix (the feature map is efficiently classically computable
    for shallow structured `H_θ`). If so, CHUBE-A is a classical model with
    quantum-flavored features and must be reported as such.
-2. Variant B with m memory qubits is an MPO of bond dimension ≤ 2^m; a matched
-   MPS/MPO baseline may match or beat it at equal effective memory.
+2. Variant B with m memory qubits admits an exact tensor-network simulation:
+   bond dimension ≤ 2^m if the memory remains pure and coherent, and up to 4^m
+   in the vectorized mixed-state/channel representation actually required by
+   the partial trace over the data register. A matched MPS/MPO baseline at the
+   corresponding bond dimension may match or beat it at equal effective memory.
 3. Variant C at 14 qubits is trivially exactly simulable; it is a *simulation
    study* of an inductive bias, never a hardware-advantage claim.
 4. Better-than-CNN accuracy is an architectural/inductive-bias result, not
