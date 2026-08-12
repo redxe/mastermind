@@ -38,5 +38,12 @@ We did not run a hardware experiment, an established resource estimator, or a sy
 
 > **Postscript (2026-08-11, after this memorandum was written):** the first two items above have since been executed and archived — an independent Qiskit cross-validation, a calibrated-noise simulation, a single uncorrected physical run on IBM `ibm_kingston` (one four-qubit, classically solvable instance; shot-noise-only uncertainty), a local Azure Quantum Resource Estimator sweep (labeled a synthetic sensitivity scenario, not an application estimate), and a bounded Schwinger-model instantiation. See REVISION_RECORD.md third and fourth passes. What remains open is listed there: validation on a genuinely uncertain instance, a controlled model-versus-device comparison, systematic-uncertainty characterization, and error-mitigated/corrected performance.
 
+## Validation-boundary clarification (2026-08-12)
+
+- **Accepted:** evaluator discretion remains; the Stage-0 noise screen omits important correlated and context-dependent effects; no boundary-scale predictive validation or independent-team study has occurred.
+- **Corrected:** frozen thresholds make some gates quantitative; Equation~10 is triage, not a device predictor; TFIM is the sole complete audit execution and includes one uncorrected hardware run, whereas the Schwinger example is a classical resource instantiation; no industry-standard claim is made.
+- **Changed:** structured judgment (§3), model escalation and snapshot provenance (§5), a prospective blinded validation protocol (§6), the claim--evidence matrix (§12), limitations (§13), and one restrained future-test sentence (§14).
+- **Left prospective:** the inter-rater study, boundary-scale criterion validation, matched Kingston protocol, and vendor-neutral snapshot-and-seal adapter. No experiment, cloud integration, schema, evaluator, or artifact changed.
+
 Sincerely,
 Vi Connelly

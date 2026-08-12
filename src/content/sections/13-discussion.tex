@@ -22,8 +22,8 @@ The field is moving from isolated circuit demonstrations toward co-designed syst
 
 Each major conclusion of this paper rests on a different kind of support, and the categories should not be confused.
 
-\begin{table}[htbp]
-\centering\small
+\begin{center}
+\small
 \begin{tabular}{p{0.44\textwidth}p{0.22\textwidth}p{0.26\textwidth}}
 \toprule
 \textbf{Claim} & \textbf{Evidence class} & \textbf{Support} \\
@@ -32,11 +32,11 @@ Readout and input access can erase query speedups & Established theorems & \cite
 Shot budgets \eqref{eq:hoeffding}--\eqref{eq:neyman-shots} and their $\sim$150$\times$ spread & Theorem + engineering approximation & Derivations in \cref{sec:resources}; machine-verified and empirically coverage-tested (\cref{app:demo}) \\
 Toy noise screen and fault-tolerant floor & Engineering approximations & Stated assumptions; scaling form observed experimentally \citep{acharya2025} \\
 Mitigation is sampling debt & Established theory + empirical evidence & \citep{cai2023,quek2024} \\
-The audit procedure (Algorithm 1) is useful & Author synthesis & One reproducible small-scale execution, cross-validated in a second SDK and run once on physical hardware (\cref{app:demo}); validation on an uncertain instance open (\cref{sec:audits}) \\
+The audit machinery is reproducible; external usefulness remains unvalidated & Author synthesis & One small TFIM execution; no inter-rater study, boundary-scale predictive validation, or evidence of improved decisions across independent teams (\cref{sec:evidence,app:demo}) \\
 On the demonstrated TFIM instance, declared toy and calibration-derived noise models and one uncorrected hardware run shifted the measured energy toward zero & Limited empirical consistency (one instance, one device-day) & Single uncorrected \texttt{ibm\_kingston} run; shot-noise-only uncertainty (\cref{app:demo}) \\
 Domain audits (DNA, scheduling, HEP) & Author synthesis + provisional hypotheses & Framing analyses; quantitative rejection of phase encoding in \cref{app:demo} \\
 \bottomrule
 \end{tabular}
-\caption{What supports each major conclusion.}
+\captionof{table}{What supports each major conclusion.}
 \label{tab:claim-evidence}
-\end{table}
+\end{center}
