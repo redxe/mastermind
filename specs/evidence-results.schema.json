@@ -2,7 +2,26 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/redxe/mastermind/specs/evidence-results.schema.json",
   "title": "Evidence Results",
-  "description": "Recorded measurements submitted to `evidence_contract.py evaluate`. Per-variation verdicts are NEVER supplied by the caller; they are derived by the evaluator from these recorded metrics, the contract's tolerances, uncertainty requirements, and decision rules. Any structural violation fails closed as Not Auditable.",
+  "description": "Recorded measurements submitted to `evidence_contract.py evaluate`. Per-variation verdicts are NEVER supplied by the caller; they are derived by the evaluator from these recorded metrics, the contract's typed decision semantics, uncertainty budgets, and combination rule. Structural violations exit nonzero with evaluation_status=invalid.",
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Repo-relative path to a regular file. Absolute paths, traversal, directories, and paths resolving outside the repository are rejected."
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 digest of the file contents."
+        }
+      }
+    }
+  },
   "type": "object",
   "additionalProperties": false,
   "required": ["contract_id", "variations", "baseline", "escalation"],
@@ -17,13 +36,18 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "dimensions", "metrics"],
+        "required": ["id", "dimensions", "metrics", "artifacts"],
         "properties": {
           "id": { "type": "string", "minLength": 1 },
           "dimensions": {
             "type": "object",
             "minProperties": 1,
-            "description": "Exactly one value per declared allowed-variation dimension. Unknown dimensions or undeclared values fail closed."
+            "description": "Exactly one scalar value per declared allowed-variation dimension. Unknown dimensions, undeclared or non-scalar values are structural errors."
+          },
+          "artifacts": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/artifact" },
+            "description": "Artifacts required to reproduce this variation's recorded metrics, verified by digest. Missing or mismatched artifacts make this variation indeterminate (or the whole audit Not Auditable under on_missing=not-auditable)."
           },
           "metrics": {
             "type": "object",
@@ -31,25 +55,62 @@
             "additionalProperties": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["value"],
+              "required": ["value", "uncertainty_budget"],
               "properties": {
                 "value": {
                   "type": "number",
-                  "description": "The computed metric value per the contract's metric definition (a non-negative discrepancy for accuracy-type metrics)."
-                },
-                "uncertainty": {
-                  "type": "number",
-                  "minimum": 0,
-                  "description": "One standard error on `value`, combining the mandatory uncertainty sources."
+                  "description": "The computed metric value per the contract's metric definition. Must be finite and inside the metric's declared domain."
                 },
                 "reference": {
                   "type": "number",
-                  "description": "Reference scale for relative tolerances."
+                  "description": "Reference scale for relative-scale support/reversal conditions."
                 },
-                "uncertainty_sources": {
-                  "type": "array",
-                  "items": { "type": "string" },
-                  "description": "Sources actually included in `uncertainty`. Must cover the contract's mandatory sources or the variation is Indeterminate."
+                "uncertainty_budget": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["components", "aggregation", "total"],
+                  "description": "Quantitative uncertainty budget. A list of source names alone can never satisfy the contract's uncertainty requirements.",
+                  "properties": {
+                    "components": {
+                      "type": "object",
+                      "minProperties": 1,
+                      "description": "Source name -> component. Every mandatory source declared by the contract must appear here.",
+                      "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "oneOf": [
+                          { "required": ["estimate"] },
+                          { "required": ["exact", "justification"] }
+                        ],
+                        "properties": {
+                          "estimate": {
+                            "type": "number",
+                            "minimum": 0,
+                            "description": "Numeric standard-uncertainty component for this source."
+                          },
+                          "exact": {
+                            "const": true,
+                            "description": "Declares this source contributes exactly zero uncertainty (deterministic)."
+                          },
+                          "justification": {
+                            "type": "string",
+                            "minLength": 10,
+                            "description": "Why this source is exact/deterministic."
+                          }
+                        }
+                      }
+                    },
+                    "aggregation": {
+                      "type": "string",
+                      "enum": ["rss", "sum"],
+                      "description": "How components combine into the total (root-sum-square or linear sum). Checked for consistency."
+                    },
+                    "total": {
+                      "type": "number",
+                      "minimum": 0,
+                      "description": "Total standard uncertainty on `value`. Must be consistent with the declared aggregation of the components."
+                    }
+                  }
                 }
               }
             }
@@ -64,18 +125,27 @@
     "baseline": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["identity", "evidence", "matched_inputs"],
+      "required": ["baseline_id", "identity", "artifacts", "matched_inputs"],
       "properties": {
+        "baseline_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,63}$",
+          "description": "Must exactly match a frozen identifier from the contract: the initial_baseline_id, or an escalation rule's expected_baseline_id."
+        },
         "identity": {
           "type": "string",
           "minLength": 3,
-          "description": "Explicit identity of the classical baseline actually used (method + implementation)."
+          "description": "Human-readable identity of the classical baseline actually used (method + implementation)."
         },
-        "evidence": {
+        "artifacts": {
           "type": "array",
-          "minItems": 1,
+          "items": { "$ref": "#/$defs/artifact" },
+          "description": "Digest-verified repo files proving the baseline was executed. This is the only evidence the evaluator labels 'verified'."
+        },
+        "citations": {
+          "type": "array",
           "items": { "type": "string", "minLength": 3 },
-          "description": "Each entry must be a repo-relative artifact path that exists, or a citation prefixed 'doi:', 'arXiv:', or 'citation:'. Unverifiable entries fail closed."
+          "description": "Literature citations (doi:/arXiv:/citation:). Recorded as citation-present; a citation establishes provenance but never proves the baseline was executed."
         },
         "matched_inputs": {
           "type": "boolean",
@@ -88,10 +158,19 @@
       "additionalProperties": false,
       "required": ["trigger_fired", "honored"],
       "properties": {
+        "rule_id": {
+          "type": "string",
+          "description": "Which contract escalation rule this refers to. Required in practice whenever trigger_fired is true."
+        },
         "trigger_fired": { "type": "boolean" },
         "honored": {
           "type": "boolean",
-          "description": "A claim of honoring is accepted only when the baseline block above verifies (identity, evidence, matched inputs); otherwise treated as unhonored."
+          "description": "A claim of honoring is accepted only when baseline_id equals the rule's expected_baseline_id AND the baseline artifacts verify by digest."
+        },
+        "trigger_evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 3 },
+          "description": "Recorded evidence/justification for the trigger assessment (which may involve human judgment against the locked criteria)."
         }
       }
     }

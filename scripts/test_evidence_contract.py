@@ -160,165 +160,417 @@ def main() -> int:
     check("changed referenced file is rejected",
           any("hash mismatch" in p for p in ec.verify_seal_data(tampered_seal)))
 
-    # --- Results schema and derived verdicts --------------------------------
+    # --- Contract semantic guards -------------------------------------------
+    broken = copy.deepcopy(doc)
+    broken["metrics"].append(copy.deepcopy(broken["metrics"][0]))
+    check("duplicate metric names rejected",
+          any("duplicate metric" in p for p in ec.semantic_contract_checks(broken)))
+    broken = copy.deepcopy(doc)
+    broken["allowed_variations"]["dimensions"].append(
+        copy.deepcopy(broken["allowed_variations"]["dimensions"][0]))
+    check("duplicate dimension names rejected",
+          any("duplicate dimension" in p for p in ec.semantic_contract_checks(broken)))
+    broken = copy.deepcopy(doc)
+    broken["allowed_variations"]["dimensions"][1]["values"] = [1234, 1234]
+    check("duplicate allowed values rejected",
+          any("duplicate allowed values" in p for p in ec.semantic_contract_checks(broken)))
+    broken = copy.deepcopy(doc)
+    broken["allowed_variations"]["dimensions"][1]["values"] = [[1, 2], 5678]
+    check("non-scalar allowed values rejected",
+          any("non-scalar" in p for p in ec.semantic_contract_checks(broken)))
+    broken = copy.deepcopy(doc)
+    broken["baseline_policy"]["escalation_rules"][1]["id"] = \
+        broken["baseline_policy"]["escalation_rules"][0]["id"]
+    check("duplicate escalation rule ids rejected",
+          any("duplicate escalation rule id" in p
+              for p in ec.semantic_contract_checks(broken)))
+    broken = copy.deepcopy(doc)
+    broken["decision_rules"]["confidence_model"]["multiple_comparisons"] = "holm"
+    check("unimplemented correction method (holm) rejected by schema",
+          bool(list(jsonschema.Draft202012Validator(schema).iter_errors(broken))))
+    broken = copy.deepcopy(doc)
+    broken["metrics"][0]["role"] = "support-only"
+    broken["metrics"][0]["reversal"] = {"operator": "le", "bound": -1.0}
+    check("reversal block on a support-only metric rejected by schema",
+          bool(list(jsonschema.Draft202012Validator(schema).iter_errors(broken))))
+    broken = copy.deepcopy(doc)
+    del broken["metrics"][1]["reversal"]
+    check("reversal-capable metric without reversal block rejected by schema",
+          bool(list(jsonschema.Draft202012Validator(schema).iter_errors(broken))))
+
+    # --- Results schema and the sealed evaluation engine ---------------------
     results_schema = ec.load_results_schema()
     jsonschema.Draft202012Validator.check_schema(results_schema)
     check("results schema is a valid Draft 2020-12 schema", True)
 
+    build_dir = REPO / "build"
+    build_dir.mkdir(exist_ok=True)
+    art_path = "examples/tfim-evidence-contract.yaml"
+    art_sha = ec.sha256_file(REPO / art_path)
+    baseline_art = "scripts/evidence_contract.py"
+    baseline_sha = ec.sha256_file(REPO / baseline_art)
+
+    def budget(*ests: float) -> dict:
+        import math as _m
+        return {"components": {name: {"estimate": e}
+                               for name, e in zip(["shot-noise", "baseline"], ests)},
+                "aggregation": "rss",
+                "total": _m.sqrt(sum(e * e for e in ests))}
+
     def passing_metrics() -> dict:
         return {
-            "energy-accuracy": {"value": 0.5, "uncertainty": 1.0,
-                                "uncertainty_sources": ["shot-noise", "baseline"]},
-            "cost-crossover": {"value": 0.01, "uncertainty": 0.005, "reference": 1.0,
-                               "uncertainty_sources": ["shot-noise", "baseline"]},
+            "energy-accuracy": {"value": 0.5, "uncertainty_budget": budget(0.8, 0.6)},
+            "cost-crossover": {"value": 0.01, "uncertainty_budget": budget(0.003, 0.004)},
         }
 
-    def full_grid_results(**overrides) -> dict:
-        names, grid = ec.expected_variation_grid(doc)
+    def full_grid_results(contract_doc: dict | None = None, **overrides) -> dict:
+        cdoc = contract_doc or doc
+        names, grid = ec.expected_variation_grid(cdoc)
         variations = []
         for i, combo in enumerate(sorted(grid, key=repr)):
             variations.append({
                 "id": f"var-{i}",
                 "dimensions": dict(zip(names, combo)),
                 "metrics": passing_metrics(),
+                "artifacts": [{"path": art_path, "sha256": art_sha}],
             })
         res = {
-            "contract_id": doc["contract_id"],
+            "contract_id": cdoc["contract_id"],
             "variations": variations,
             "baseline": {
+                "baseline_id": "free-fermion-svd",
                 "identity": "free-fermion-svd (scripts/scale_sweep.py)",
-                "evidence": ["scripts/scale_sweep.py"],
+                "artifacts": [{"path": baseline_art, "sha256": baseline_sha}],
+                "citations": ["doi:10.1016/0003-4916(70)90270-8"],
                 "matched_inputs": True,
             },
-            "escalation": {"trigger_fired": True, "honored": True},
+            "escalation": {"rule_id": "integrable-exact", "trigger_fired": True,
+                           "honored": True,
+                           "trigger_evidence": ["TFIM is integrable (Pfeuty 1970)"]},
         }
         res.update(overrides)
         return res
 
-    def evaluate(res: dict) -> dict:
-        rpath = REPO / "build" / "test-results.json"
-        rpath.parent.mkdir(exist_ok=True)
-        rpath.write_text(json.dumps(res), encoding="utf-8")
-        import contextlib
-        import io
+    import contextlib
+    import io
+
+    def evaluate(res: dict | None, contract_rel: str = "examples/tfim-evidence-contract.yaml",
+                 raw: str | None = None) -> dict:
+        rpath = build_dir / "test-results.json"
+        rpath.write_text(raw if raw is not None else json.dumps(res),
+                         encoding="utf-8")
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
-            rc = ec.main(["evaluate", str(example), "--results", str(rpath)])
+            rc = ec.main(["evaluate", contract_rel, "--results", str(rpath)])
         rpath.unlink()
         report = json.loads(buf.getvalue())
         report["_rc"] = rc
         return report
 
-    report = evaluate(full_grid_results())
-    check("full passing grid with verified escalation -> Stable",
-          report["outcome"] == "Stable", str(report))
+    orig_seal_path = ec.SEAL_PATH
+    orig_manifest_path = ec.MANIFEST_PATH
+    temp_seal = build_dir / "test-seal.json"
+    temp_manifest = build_dir / "test-manifest.yaml"
+    temp_contract = build_dir / "test-variant-contract.yaml"
 
-    # Adversarial: caller-supplied verdicts are rejected by the results schema.
-    res = full_grid_results()
-    res["variations"][0]["verdict"] = "supported"
-    report = evaluate(res)
-    check("caller-supplied verdict fails closed as Not Auditable",
-          report["outcome"] == "Not Auditable")
+    def install_seal() -> None:
+        files, placeholders = ec._sealed_files()
+        seal = ec.build_seal(files, placeholders)
+        temp_seal.write_text(json.dumps(seal), encoding="utf-8")
+        ec.SEAL_PATH = temp_seal
 
-    # Adversarial: a single favorable variation cannot produce Stable.
-    res = full_grid_results()
-    res["variations"] = res["variations"][:1]
-    report = evaluate(res)
-    check("single favorable variation cannot yield Stable (not-auditable policy)",
-          report["outcome"] == "Not Auditable")
+    def install_variant(vdoc: dict) -> str:
+        rel = "build/test-variant-contract.yaml"
+        temp_contract.write_text(yaml.safe_dump(vdoc), encoding="utf-8")
+        temp_manifest.write_text(yaml.safe_dump(
+            {"claims": {vdoc["corpus"]["claim_key"]:
+                        {"contract": rel, "status": "drafted"}}}), encoding="utf-8")
+        ec.MANIFEST_PATH = temp_manifest
+        install_seal()
+        return rel
 
-    # Adversarial: duplicate variation combination is rejected.
-    res = full_grid_results()
-    res["variations"][1]["dimensions"] = dict(res["variations"][0]["dimensions"])
-    report = evaluate(res)
-    check("duplicate variation combination fails closed",
-          report["outcome"] == "Not Auditable")
+    try:
+        # Seal binding: refuse to evaluate without a seal.
+        ec.SEAL_PATH = build_dir / "no-such-seal.json"
+        report = evaluate(full_grid_results())
+        check("evaluation refuses to run without a protocol seal",
+              report["_rc"] == 2 and report["evaluation_status"] == "invalid"
+              and any("seal" in r for r in report["invalid_reasons"]))
 
-    # Adversarial: unknown dimension name is rejected.
-    res = full_grid_results()
-    res["variations"][0]["dimensions"]["favorable_knob"] = 1
-    report = evaluate(res)
-    check("unknown dimension fails closed", report["outcome"] == "Not Auditable")
+        # Install a temporary seal over the real sealed set (unit-test seal
+        # only; the repository's real protocol seal is never created here).
+        install_seal()
+        loaded_seal = json.loads(temp_seal.read_text(encoding="utf-8"))
+        check("temp seal records the engine version",
+              loaded_seal["engine_version"] == ec.ENGINE_VERSION)
+        check("sealed set includes results schema, engine, and requirements",
+              {ec.RESULTS_SCHEMA_PATH, ec.ENGINE_PATH, ec.REQUIREMENTS_PATH}
+              <= set(ec._sealed_files()[0]))
+        wrong_engine = copy.deepcopy(loaded_seal)
+        wrong_engine["engine_version"] = "0.0.1"
+        wrong_engine["seal_hash"] = ec.compute_seal_hash(wrong_engine)
+        check("seal with mismatched engine version rejected",
+              any("engine_version" in p for p in ec.verify_seal_data(wrong_engine)))
 
-    # Adversarial: undeclared dimension value is rejected.
-    res = full_grid_results()
-    res["variations"][0]["dimensions"]["transpiler_seed"] = 99999
-    report = evaluate(res)
-    check("undeclared dimension value fails closed",
-          report["outcome"] == "Not Auditable")
+        report = evaluate(full_grid_results())
+        check("full passing grid with verified escalation -> Stable (exit 0)",
+              report["outcome"] == "Stable" and report["_rc"] == 0
+              and report["evaluation_status"] == "valid", str(report)[:300])
+        check("report includes Bonferroni family accounting",
+              report["multiple_comparisons"]["method"] == "bonferroni"
+              and report["multiple_comparisons"]["family_size"] == 24)
+        check("baseline citation labeled citation-present, never verified-by-citation",
+              report["baseline"]["citation_status"] == "citation-present"
+              and report["baseline"]["artifacts_verified"] is True)
 
-    # Adversarial: contract_id mismatch is rejected.
-    res = full_grid_results(contract_id="some-other-claim")
-    report = evaluate(res)
-    check("contract_id mismatch fails closed", report["outcome"] == "Not Auditable")
+        # Seal binding: absolute and traversal contract paths are refused.
+        report = evaluate(full_grid_results(),
+                          contract_rel=str(REPO / "examples" / "tfim-evidence-contract.yaml"))
+        check("absolute contract path refused", report["_rc"] == 2)
+        report = evaluate(full_grid_results(),
+                          contract_rel="examples/../examples/tfim-evidence-contract.yaml")
+        check("traversal contract path refused", report["_rc"] == 2)
+        report = evaluate(full_grid_results(),
+                          contract_rel="specs/evidence-contract.schema.json")
+        check("contract not referenced by the manifest refused", report["_rc"] == 2)
 
-    # Uncovered mandatory uncertainty source -> that variation is indeterminate.
-    res = full_grid_results()
-    res["variations"][0]["metrics"]["energy-accuracy"]["uncertainty_sources"] = ["shot-noise"]
-    report = evaluate(res)
-    check("missing mandatory uncertainty source -> Conditionally Stable",
-          report["outcome"] == "Conditionally Stable")
+        # Seal binding: contract modified after sealing is refused.
+        vdoc = copy.deepcopy(doc)
+        rel = install_variant(vdoc)
+        temp_contract.write_text(temp_contract.read_text(encoding="utf-8")
+                                 + "\n# tampered\n", encoding="utf-8")
+        report = evaluate(full_grid_results(vdoc), contract_rel=rel)
+        check("contract modified after sealing refused",
+              report["_rc"] == 2
+              and any("modified after sealing" in r or "hash mismatch" in r
+                      for r in report["invalid_reasons"]), str(report)[:300])
 
-    # Confident tolerance failure -> reversed -> Unresolved with the rest supported.
-    res = full_grid_results()
-    res["variations"][0]["metrics"]["energy-accuracy"] = {
-        "value": 50.0, "uncertainty": 1.0,
-        "uncertainty_sources": ["shot-noise", "baseline"]}
-    report = evaluate(res)
-    check("confident metric failure -> Unresolved",
-          report["outcome"] == "Unresolved")
+        # Restore the standard sealed env for the remaining tests.
+        ec.MANIFEST_PATH = orig_manifest_path
+        install_seal()
 
-    # Non-confident tolerance failure -> indeterminate, not reversed.
-    res = full_grid_results()
-    res["variations"][0]["metrics"]["energy-accuracy"] = {
-        "value": 1.5, "uncertainty": 1.0,
-        "uncertainty_sources": ["shot-noise", "baseline"]}
-    report = evaluate(res)
-    check("non-confident failure is indeterminate -> Conditionally Stable",
-          report["outcome"] == "Conditionally Stable")
+        # Structural: caller-supplied verdicts rejected, exit 2.
+        res = full_grid_results()
+        res["variations"][0]["verdict"] = "supported"
+        report = evaluate(res)
+        check("caller-supplied verdict is a structural error (exit 2)",
+              report["_rc"] == 2 and report["evaluation_status"] == "invalid")
 
-    # evidence_missing on one variation -> indeterminate for that variation.
-    res = full_grid_results()
-    res["variations"][0]["evidence_missing"] = True
-    report = evaluate(res)
-    check("evidence_missing variation is indeterminate -> Conditionally Stable",
-          report["outcome"] == "Conditionally Stable")
+        # Scientific: incomplete grid -> Not Auditable, exit 0.
+        res = full_grid_results()
+        res["variations"] = res["variations"][:1]
+        report = evaluate(res)
+        check("single favorable variation -> Not Auditable (exit 0)",
+              report["outcome"] == "Not Auditable" and report["_rc"] == 0
+              and report["evaluation_status"] == "valid")
 
-    # Adversarial: missing required metric cannot be supported.
-    res = full_grid_results()
-    del res["variations"][0]["metrics"]["cost-crossover"]
-    report = evaluate(res)
-    check("missing required metric -> Conditionally Stable at best",
-          report["outcome"] == "Conditionally Stable")
+        # Structural grid violations, exit 2.
+        res = full_grid_results()
+        res["variations"][1]["dimensions"] = dict(res["variations"][0]["dimensions"])
+        check("duplicate variation combination exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][1]["id"] = res["variations"][0]["id"]
+        check("duplicate variation ids exit 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["dimensions"]["favorable_knob"] = 1
+        check("unknown dimension exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["dimensions"]["transpiler_seed"] = 99999
+        check("undeclared dimension value exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["dimensions"]["transpiler_seed"] = [1234]
+        check("non-scalar dimension value exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results(contract_id="some-other-claim")
+        check("contract_id mismatch exits 2", evaluate(res)["_rc"] == 2)
 
-    # Adversarial: escalation booleans without verifiable baseline evidence.
-    res = full_grid_results()
-    res["baseline"]["evidence"] = ["build/does-not-exist.dat"]
-    report = evaluate(res)
-    check("unverifiable baseline evidence with strongest_known_required fails closed",
-          report["outcome"] == "Not Auditable")
+        # Finite, domain-valid numbers.
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"]["value"] = float("nan")
+        check("NaN metric value exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"]["value"] = float("inf")
+        check("Infinity metric value exits 2", evaluate(res)["_rc"] == 2)
+        raw = json.dumps(full_grid_results()).replace('"value": 0.5', '"value": 1e999', 1)
+        check("overflowing literal (1e999) exits 2", evaluate(None, raw=raw)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"]["value"] = -0.5
+        report = evaluate(res)
+        check("negative value for nonnegative-domain metric exits 2",
+              report["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"][
+            "uncertainty_budget"]["components"]["shot-noise"]["estimate"] = -0.1
+        check("negative uncertainty component exits 2", evaluate(res)["_rc"] == 2)
 
-    res = full_grid_results()
-    res["baseline"]["matched_inputs"] = False
-    report = evaluate(res)
-    check("unmatched baseline inputs with strongest_known_required fail closed",
-          report["outcome"] == "Not Auditable")
+        # Quantitative uncertainty budgets.
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"][
+            "uncertainty_budget"]["total"] = 5.0
+        check("budget total inconsistent with components exits 2",
+              evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"]["uncertainty_budget"] = {
+            "components": {"shot-noise": {"estimate": 1.0}},
+            "aggregation": "rss", "total": 1.0}
+        report = evaluate(res)
+        check("missing mandatory source component -> Conditionally Stable (exit 0)",
+              report["outcome"] == "Conditionally Stable" and report["_rc"] == 0)
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"] = {
+            "value": 0.5, "uncertainty_sources": ["shot-noise", "baseline"]}
+        check("name-list-only uncertainty (no budget) exits 2",
+              evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["energy-accuracy"]["uncertainty_budget"] = {
+            "components": {"shot-noise": {"estimate": 1.0},
+                           "baseline": {"exact": True,
+                                        "justification": "exact free-fermion energy, deterministic"}},
+            "aggregation": "rss", "total": 1.0}
+        report = evaluate(res)
+        check("exact/deterministic component with justification accepted",
+              report["outcome"] == "Stable" and report["_rc"] == 0)
 
-    # Adversarial: honored=true is not trusted when evidence is unverifiable
-    # (already covered above); trigger fired + honored=false is Not Auditable
-    # under the mandatory policy.
-    res = full_grid_results()
-    res["escalation"]["honored"] = False
-    report = evaluate(res)
-    check("unhonored mandatory escalation is Not Auditable end-to-end",
-          report["outcome"] == "Not Auditable")
+        # Typed decision semantics: a support-only failure can NEVER reverse.
+        res = full_grid_results()
+        for var in res["variations"]:
+            var["metrics"]["energy-accuracy"]["value"] = 50.0
+        report = evaluate(res)
+        check("support-only failure everywhere is never Reversed",
+              report["outcome"] == "Not Auditable" and report["_rc"] == 0
+              and all(v["verdict"] != "reversed"
+                      for v in report["verdicts"].values()), str(report)[:300])
 
-    # Missing baseline block entirely -> results schema rejection.
-    res = full_grid_results()
-    del res["baseline"]
-    report = evaluate(res)
-    check("results without baseline block fail closed",
-          report["outcome"] == "Not Auditable")
+        # Only a confidently opposite cost-crossover margin reverses.
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["cost-crossover"]["value"] = -2.55
+        report = evaluate(res)
+        check("confident negative crossover margin -> reversed -> Unresolved",
+              report["outcome"] == "Unresolved" and report["_rc"] == 0)
+        res = full_grid_results()
+        res["variations"][0]["metrics"]["cost-crossover"]["value"] = -0.051
+        report = evaluate(res)
+        check("marginally negative crossover (not confident) is indeterminate",
+              report["outcome"] == "Conditionally Stable" and report["_rc"] == 0)
+
+        # Bonferroni changes a boundary verdict: same evidence, corrected vs raw.
+        boundary = full_grid_results()
+        for var in boundary["variations"]:
+            var["metrics"]["cost-crossover"] = {"value": -2.05,
+                                                "uncertainty_budget": budget(0.8, 0.6)}
+        report_bonf = evaluate(boundary)
+        vdoc = copy.deepcopy(doc)
+        vdoc["decision_rules"]["confidence_model"]["multiple_comparisons"] = "none"
+        rel = install_variant(vdoc)
+        report_none = evaluate(full_grid_results(vdoc, variations=boundary["variations"]),
+                               contract_rel=rel)
+        ec.MANIFEST_PATH = orig_manifest_path
+        install_seal()
+        check("uncorrected alpha reverses the boundary case",
+              report_none["outcome"] == "Reversed" and report_none["_rc"] == 0,
+              str(report_none)[:200])
+        check("Bonferroni correction changes the boundary verdict",
+              report_bonf["outcome"] == "Not Auditable" and report_bonf["_rc"] == 0
+              and all(v["verdict"] != "reversed"
+                      for v in report_bonf["verdicts"].values()), str(report_bonf)[:200])
+
+        # Per-variation artifact accounting.
+        res = full_grid_results()
+        res["variations"][0]["artifacts"] = [{"path": "build/does-not-exist.dat",
+                                              "sha256": "0" * 64}]
+        report = evaluate(res)
+        check("missing variation artifact under not-auditable voids the audit (exit 0)",
+              report["outcome"] == "Not Auditable" and report["_rc"] == 0)
+        res = full_grid_results()
+        res["variations"][0]["artifacts"] = [{"path": art_path, "sha256": "0" * 64}]
+        report = evaluate(res)
+        check("artifact digest mismatch under not-auditable voids the audit (exit 0)",
+              report["outcome"] == "Not Auditable" and report["_rc"] == 0)
+        res = full_grid_results()
+        res["variations"][0]["artifacts"] = [{"path": str(REPO / art_path),
+                                              "sha256": art_sha}]
+        check("absolute artifact path exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["artifacts"] = [{"path": "../outside.dat",
+                                              "sha256": "0" * 64}]
+        check("traversal artifact path exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["variations"][0]["artifacts"] = [{"path": "scripts", "sha256": "0" * 64}]
+        check("directory artifact exits 2", evaluate(res)["_rc"] == 2)
+
+        # indeterminate-variation policy: only the affected variation degrades.
+        vdoc = copy.deepcopy(doc)
+        vdoc["missing_evidence_policy"]["on_missing"] = "indeterminate-variation"
+        rel = install_variant(vdoc)
+        res = full_grid_results(vdoc)
+        res["variations"][0]["artifacts"] = [{"path": "build/does-not-exist.dat",
+                                              "sha256": "0" * 64}]
+        report = evaluate(res, contract_rel=rel)
+        ec.MANIFEST_PATH = orig_manifest_path
+        install_seal()
+        check("missing artifact under indeterminate-variation degrades only that "
+              "variation (Conditionally Stable, exit 0)",
+              report["outcome"] == "Conditionally Stable" and report["_rc"] == 0
+              and report["verdicts"]["var-0"]["verdict"] == "indeterminate",
+              str(report)[:300])
+
+        # evidence_missing / missing metric behave as indeterminate.
+        res = full_grid_results()
+        res["variations"][0]["evidence_missing"] = True
+        report = evaluate(res)
+        check("evidence_missing variation -> Conditionally Stable",
+              report["outcome"] == "Conditionally Stable" and report["_rc"] == 0)
+        res = full_grid_results()
+        del res["variations"][0]["metrics"]["cost-crossover"]
+        report = evaluate(res)
+        check("missing required metric -> Conditionally Stable at best",
+              report["outcome"] == "Conditionally Stable" and report["_rc"] == 0)
+
+        # Honest baseline enforcement.
+        res = full_grid_results()
+        res["baseline"]["baseline_id"] = "my-favorite-baseline"
+        check("undeclared baseline_id exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["baseline"]["artifacts"] = [{"path": baseline_art, "sha256": "0" * 64}]
+        check("baseline artifact digest mismatch is a provenance failure (exit 2)",
+              evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["baseline"]["artifacts"] = []
+        report = evaluate(res)
+        check("citation-only baseline cannot prove an honored escalation (exit 2)",
+              report["_rc"] == 2
+              and any("citations alone" in r for r in report["invalid_reasons"]))
+        res = full_grid_results()
+        res["baseline"]["matched_inputs"] = False
+        check("unmatched baseline inputs exit 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["escalation"]["rule_id"] = "no-such-rule"
+        check("unknown escalation rule_id exits 2", evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["baseline"]["baseline_id"] = "dense-eigh"
+        check("honored escalation with the wrong baseline_id exits 2",
+              evaluate(res)["_rc"] == 2)
+        res = full_grid_results()
+        res["escalation"]["honored"] = False
+        report = evaluate(res)
+        check("honestly-declared unhonored mandatory escalation -> Not Auditable (exit 0)",
+              report["outcome"] == "Not Auditable" and report["_rc"] == 0
+              and report["evaluation_status"] == "valid")
+        report = evaluate(full_grid_results())
+        check("trigger criteria are echoed as locked text, not executed",
+              isinstance(report["baseline"]["trigger_criteria_locked"], str)
+              and report["baseline"]["trigger_evidence_recorded"])
+
+        # Missing baseline block entirely -> structural.
+        res = full_grid_results()
+        del res["baseline"]
+        check("results without baseline block exit 2", evaluate(res)["_rc"] == 2)
+    finally:
+        ec.SEAL_PATH = orig_seal_path
+        ec.MANIFEST_PATH = orig_manifest_path
+        for f in (temp_seal, temp_manifest, temp_contract):
+            if f.exists():
+                f.unlink()
+
 
     # --- Schema: extended prospective variation dimensions ------------------
     validator = jsonschema.Draft202012Validator(schema)

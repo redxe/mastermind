@@ -91,11 +91,16 @@
     "baseline_policy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["initial_baseline", "escalation_rules", "strongest_known_required"],
+      "required": ["initial_baseline", "initial_baseline_id", "escalation_rules", "strongest_known_required"],
       "properties": {
         "initial_baseline": {
           "type": "string",
-          "description": "The classical baseline the audit starts from (method + implementation)."
+          "description": "The classical baseline the audit starts from (method + implementation), human-readable."
+        },
+        "initial_baseline_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,63}$",
+          "description": "Frozen stable identifier for the initial baseline. Results must reference baselines by these exact identifiers."
         },
         "escalation_rules": {
           "type": "array",
@@ -103,15 +108,25 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["trigger", "escalate_to"],
+            "required": ["id", "trigger", "escalate_to", "expected_baseline_id"],
             "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{1,63}$",
+                "description": "Stable identifier for this escalation rule."
+              },
               "trigger": {
                 "type": "string",
-                "description": "Condition under which the baseline must be replaced (e.g. 'instance family is integrable', 'a polynomial-time exact method is known')."
+                "description": "Locked trigger criteria. Whether the trigger holds may require human judgment; the evaluator records the criteria and the trigger evidence rather than deciding literature questions itself."
               },
               "escalate_to": {
                 "type": "string",
-                "description": "The stronger baseline that must be used when the trigger holds."
+                "description": "The stronger baseline that must be used when the trigger holds (human-readable)."
+              },
+              "expected_baseline_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{1,63}$",
+                "description": "Frozen identifier the results' baseline_id must equal when this rule is honored."
               }
             }
           }
@@ -152,28 +167,59 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["name", "definition", "tolerance"],
+        "required": ["name", "definition", "role", "domain", "support"],
         "properties": {
           "name": { "type": "string" },
           "definition": {
             "type": "string",
-            "description": "Unambiguous computable definition, including normalization and sign conventions."
+            "description": "Unambiguous computable definition, including normalization and sign conventions. Human-readable explanation only; never executed."
           },
-          "tolerance": {
+          "role": {
+            "type": "string",
+            "enum": ["support-only", "reversal-capable"],
+            "description": "support-only metrics can support or (on failure) make a variation indeterminate/unsupported, but can NEVER produce a reversal. Only reversal-capable metrics with an explicit reversal condition can reverse a claim."
+          },
+          "domain": {
+            "type": "string",
+            "enum": ["nonnegative", "signed"],
+            "description": "Valid value domain. Discrepancy metrics must be nonnegative; negative values are rejected."
+          },
+          "support": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["value", "kind"],
+            "required": ["operator"],
             "properties": {
-              "value": { "type": "number", "exclusiveMinimum": 0 },
-              "kind": { "type": "string", "enum": ["absolute", "relative", "standard-errors"] }
-            }
+              "operator": { "type": "string", "enum": ["le", "ge", "abs_le", "between"] },
+              "bound": { "type": "number" },
+              "lower": { "type": "number" },
+              "upper": { "type": "number" },
+              "scale": { "type": "string", "enum": ["absolute", "relative", "standard-errors"], "default": "absolute" }
+            },
+            "if": { "properties": { "operator": { "const": "between" } } },
+            "then": { "required": ["lower", "upper"] },
+            "else": { "required": ["bound"] },
+            "description": "Typed executable support condition, evaluated as a point comparison of the recorded value."
+          },
+          "reversal": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["operator", "bound"],
+            "properties": {
+              "operator": { "type": "string", "enum": ["le", "ge"] },
+              "bound": { "type": "number" },
+              "scale": { "type": "string", "enum": ["absolute", "relative", "standard-errors"], "default": "absolute" }
+            },
+            "description": "Explicit reversal condition, evaluated uncertainty-aware: fires only when the value is confidently (at the corrected alpha) on the reversal side of the bound."
           },
           "required_for_support": {
             "type": "boolean",
             "default": true,
-            "description": "If true, the claim cannot be Supported in any variation where this metric fails its tolerance."
+            "description": "If true, the claim cannot be Supported in any variation where this metric fails its support condition."
           }
-        }
+        },
+        "if": { "properties": { "role": { "const": "reversal-capable" } } },
+        "then": { "required": ["reversal"] },
+        "else": { "not": { "required": ["reversal"] } }
       }
     },
     "allowed_variations": {
@@ -207,7 +253,7 @@
     "decision_rules": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["confidence_model", "per_variation_rule", "aggregation_rule"],
+      "required": ["confidence_model", "per_variation_rule", "combination_rule", "aggregation_rule"],
       "properties": {
         "confidence_model": {
           "type": "object",
@@ -217,8 +263,9 @@
             "alpha": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
             "multiple_comparisons": {
               "type": "string",
-              "enum": ["none", "bonferroni", "holm", "benjamini-hochberg"],
-              "default": "bonferroni"
+              "enum": ["none", "bonferroni"],
+              "default": "bonferroni",
+              "description": "Only methods the evaluator actually implements are accepted. Holm and Benjamini-Hochberg are rejected until implemented; a declared method is never silently ignored."
             },
             "uncertainty_sources": {
               "type": "array",
@@ -232,7 +279,12 @@
         },
         "per_variation_rule": {
           "type": "string",
-          "description": "Deterministic rule mapping one variation's results to supported | reversed | indeterminate."
+          "description": "Human-readable explanation of the per-variation decision. NOT executed; the executable semantics live in each metric's typed support/reversal conditions and combination_rule."
+        },
+        "combination_rule": {
+          "type": "string",
+          "enum": ["standard-v1"],
+          "description": "Deterministic combination of metric results into a per-variation verdict. standard-v1: any confidently-fired reversal condition -> reversed (unless all support conditions also pass, which is contradictory -> indeterminate); all required support conditions pass -> supported; otherwise indeterminate."
         },
         "aggregation_rule": {
           "type": "string",

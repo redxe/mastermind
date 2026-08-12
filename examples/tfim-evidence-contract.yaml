@@ -36,19 +36,24 @@ workload:
 
 baseline_policy:
   initial_baseline: "Dense Hamiltonian diagonalization (numpy.linalg.eigh), O(8^n) memory-bound"
+  initial_baseline_id: dense-eigh
   escalation_rules:
-    - trigger: >
+    - id: integrable-exact
+      trigger: >
         The instance family is integrable or otherwise admits a known
         polynomial-time exact classical solution.
       escalate_to: >
         Exact free-fermion solution (Pfeuty 1970 / Lieb-Schultz-Mattis), O(n^3)
         via SVD of the coupling matrix, as implemented in
         scripts/scale_sweep.py::free_fermion_ground_energy.
-    - trigger: >
+      expected_baseline_id: free-fermion-svd
+    - id: nonintegrable-tn
+      trigger: >
         The instance family is nonintegrable and exceeds exact methods.
       escalate_to: >
         State-of-the-art tensor-network (DMRG/MPS) baseline with matched accuracy
         target and reported wall-clock.
+      expected_baseline_id: dmrg-mps
   strongest_known_required: true
 
 budget:
@@ -64,15 +69,24 @@ metrics:
   - name: energy-accuracy
     definition: >
       |E_estimated - E_baseline| for each n where the baseline is computable,
-      where E_baseline is the escalated (free-fermion) exact energy.
-    tolerance: { value: 1.0, kind: standard-errors }
+      where E_baseline is the escalated (free-fermion) exact energy. A
+      nonnegative discrepancy. Support-only: a failure makes the variation
+      indeterminate or unsupported; it can never reverse the claim.
+    role: support-only
+    domain: nonnegative
+    support: { operator: le, bound: 1.0, scale: standard-errors }
     required_for_support: true
   - name: cost-crossover
     definition: >
-      Sign of d/dn [quantum shot budget / classical baseline wall-clock]: the claim
-      direction requires the quantum budget to grow no faster than the strongest
-      classical baseline cost over the declared size range.
-    tolerance: { value: 0.05, kind: relative }
+      Signed cost-crossover margin over the declared size range: the minimum over
+      n of [classical baseline cost growth rate - quantum shot-budget growth rate],
+      in normalized log-cost-per-qubit units. Positive supports the claim
+      (quantum budget grows no faster than the strongest classical baseline).
+      Only a confidently negative margin below -0.05 may produce Reversed.
+    role: reversal-capable
+    domain: signed
+    support: { operator: ge, bound: 0.0, scale: absolute }
+    reversal: { operator: le, bound: -0.05, scale: absolute }
     required_for_support: true
 
 allowed_variations:
@@ -90,10 +104,12 @@ decision_rules:
     multiple_comparisons: bonferroni
     uncertainty_sources: [shot-noise, baseline]
   per_variation_rule: >
-    supported iff both metrics pass tolerance under the escalated baseline;
-    reversed iff cost-crossover flips sign at 95% confidence under the escalated
-    baseline; a variation using only the pre-escalation dense baseline is at most
-    indeterminate regardless of metric values.
+    Human-readable summary (not executed): supported iff both metrics pass their
+    typed support conditions under the escalated baseline; reversed only when the
+    signed cost-crossover margin is confidently below -0.05 at the corrected
+    alpha; an energy-accuracy failure makes the variation indeterminate or
+    unsupported, never reversed.
+  combination_rule: standard-v1
   aggregation_rule: standard-v1
 
 missing_evidence_policy:

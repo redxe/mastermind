@@ -46,10 +46,21 @@ the schema, the corpus manifest, and every contract file.
    [evidence-contract.schema.json](../../specs/evidence-contract.schema.json).
 2. Run `evidence_contract.py validate` on every contract.
 3. Run `evidence_contract.py seal-protocol` to produce
-   `specs/protocol-seal.json` containing hashes and a timestamp. Commit it.
+   `specs/protocol-seal.json` containing hashes, the engine version, and a
+   timestamp. The sealed set covers the contract schema, the results schema,
+   this protocol, the corpus manifest, the evaluator engine itself, the pinned
+   verification dependencies, and every non-placeholder contract. Commit it.
 4. Only after the seal is committed and pushed may outcome-bearing computations be
-   evaluated against contracts.
+   evaluated against contracts. **`evaluate` refuses to run unless** the seal
+   exists and verifies, the supplied contract path is repo-relative and resolves
+   inside the repository, it is the exact contract referenced by the manifest
+   claim entry, its hash appears in the seal, and the current file contents
+   match that hash.
 5. Record results per variation in a results file; run `evidence_contract.py evaluate`.
+   The report carries a machine-readable `evaluation_status`: `valid` (exit 0)
+   for any scientific outcome including Not Auditable; `invalid` (exit 2) for
+   structural errors — malformed schema, grid violations, seal failures, path
+   violations, or baseline-provenance failures.
 6. Publish contract + seal + results + evaluation together as the evidence bundle.
 
 ## 4. Per-variation verdicts
@@ -57,20 +68,35 @@ the schema, the corpus manifest, and every contract file.
 Verdicts are **derived by the evaluator** from recorded metrics — never supplied
 by the caller. Results must validate against
 [evidence-results.schema.json](../../specs/evidence-results.schema.json), must
-cover the complete Cartesian product of the declared allowed-variation values
-(duplicates, unknown dimensions, and undeclared values are rejected), and must
-include explicit baseline identity, verifiable evidence, and matched inputs.
-Structural violations fail closed as Not Auditable.
+contain only finite, domain-valid numbers, must cover the complete Cartesian
+product of the declared allowed-variation values (duplicate ids or combinations,
+unknown dimensions, undeclared or non-scalar values are rejected), and must
+carry per-variation artifact lists and quantitative uncertainty budgets.
 
-For each enumerated variation combination:
+Each metric declares **typed executable decision semantics**: a `role`
+(`support-only` | `reversal-capable`), a value `domain`, a typed `support`
+condition (point comparison), and — only for reversal-capable metrics — an
+explicit `reversal` condition evaluated uncertainty-aware at the corrected
+alpha (`multiple_comparisons`; only implemented methods are accepted by the
+schema). Prose rules are human-readable explanation only and are never
+executed. Combination is deterministic (`combination_rule: standard-v1`):
 
-- **supported** — every metric with `required_for_support: true` is within tolerance,
-  all mandatory uncertainty sources are quantified, and the estimand agrees with the
-  claim's direction at the declared confidence level.
-- **reversed** — the estimand contradicts the claim's direction at the declared
-  confidence level with all mandatory uncertainty sources included.
-- **indeterminate** — anything else: tolerance failures without a confident reversal,
-  missing non-fatal evidence, or unquantified mandatory uncertainty.
+- **supported** — every `required_for_support` metric is recorded, its
+  uncertainty budget quantifies all mandatory sources (a list of source names
+  alone never suffices), and its support condition passes.
+- **reversed** — a reversal-capable metric confidently satisfies its explicit
+  reversal condition. A support-only metric failure can **never** produce a
+  reversal — it makes the variation indeterminate or unsupported.
+- **indeterminate** — anything else, including missing or digest-mismatched
+  per-variation artifacts (under `on_missing: indeterminate-variation`; under
+  `not-auditable` such a failure voids the complete audit).
+
+Baseline accounting is honest: results must reference the frozen
+`initial_baseline_id` or an escalation rule's `expected_baseline_id`; only
+digest-verified repo-file artifacts count as *verified*; citations are recorded
+as *citation-present* and can establish provenance but never prove execution;
+escalation triggers are locked criteria echoed with recorded evidence, since
+their assessment may require human judgment.
 
 ## 5. Aggregation (`standard-v1`)
 
