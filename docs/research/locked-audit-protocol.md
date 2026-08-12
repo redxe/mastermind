@@ -75,8 +75,17 @@ For each enumerated variation combination:
 | None supported, at least one reversed | Reversed |
 | None supported, none reversed | Not Auditable |
 
-A baseline-escalation trigger that fired but was not honored caps the outcome at
-Conditionally Stable and must be reported.
+**Baseline-escalation consequences** (two intentionally distinct conditions):
+
+- If the contract declares `strongest_known_required: true`, the strongest known
+  classical baseline is **mandatory for auditability**: an escalation trigger that
+  fires and is not honored makes the claim **Not Auditable**, regardless of the
+  per-variation verdicts.
+- If `strongest_known_required: false`, the stronger baseline is recommended but
+  not mandatory: an unhonored trigger **caps the outcome at Conditionally
+  Stable** and must be reported.
+
+Both cases must appear in the published evaluation report.
 
 ## 6. Pilot then expansion
 

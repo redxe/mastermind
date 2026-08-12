@@ -118,7 +118,7 @@
         },
         "strongest_known_required": {
           "type": "boolean",
-          "description": "If true, the claim is Not Auditable unless the strongest known classical baseline for the instance family was actually run or cited with matched inputs."
+          "description": "Controls the consequence of an escalation trigger that fires but is not honored. If true, the strongest known classical baseline is mandatory for auditability: an unhonored trigger (or absence of the strongest-known baseline with matched inputs) makes the claim Not Auditable. If false, the stronger baseline is recommended but not mandatory: an unhonored trigger caps the outcome at Conditionally Stable (protocol section 5)."
         }
       }
     },

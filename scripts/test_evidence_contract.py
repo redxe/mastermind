@@ -99,25 +99,34 @@ def main() -> int:
     # Aggregation rule standard-v1 (protocol section 5).
     agg = ec.aggregate_standard_v1
     check("all supported -> Stable",
-          agg(["supported"] * 3, artifacts_ok=True, escalation_capped=False) == "Stable")
+          agg(["supported"] * 3, artifacts_ok=True, escalation_unhonored=False) == "Stable")
     check("supported + indeterminate -> Conditionally Stable",
           agg(["supported", "indeterminate"], artifacts_ok=True,
-              escalation_capped=False) == "Conditionally Stable")
+              escalation_unhonored=False) == "Conditionally Stable")
     check("supported + reversed -> Unresolved",
           agg(["supported", "reversed"], artifacts_ok=True,
-              escalation_capped=False) == "Unresolved")
+              escalation_unhonored=False) == "Unresolved")
     check("all reversed -> Reversed",
           agg(["reversed", "reversed"], artifacts_ok=True,
-              escalation_capped=False) == "Reversed")
+              escalation_unhonored=False) == "Reversed")
     check("only indeterminate -> Not Auditable",
           agg(["indeterminate"], artifacts_ok=True,
-              escalation_capped=False) == "Not Auditable")
+              escalation_unhonored=False) == "Not Auditable")
     check("missing artifacts -> Not Auditable",
           agg(["supported"] * 3, artifacts_ok=False,
-              escalation_capped=False) == "Not Auditable")
-    check("unhonored escalation caps Stable at Conditionally Stable",
+              escalation_unhonored=False) == "Not Auditable")
+    check("unhonored non-mandatory escalation caps Stable at Conditionally Stable",
           agg(["supported"] * 3, artifacts_ok=True,
-              escalation_capped=True) == "Conditionally Stable")
+              escalation_unhonored=True,
+              strongest_known_required=False) == "Conditionally Stable")
+    check("unhonored MANDATORY escalation -> Not Auditable",
+          agg(["supported"] * 3, artifacts_ok=True,
+              escalation_unhonored=True,
+              strongest_known_required=True) == "Not Auditable")
+    check("honored escalation leaves Stable intact even when mandatory",
+          agg(["supported"] * 3, artifacts_ok=True,
+              escalation_unhonored=False,
+              strongest_known_required=True) == "Stable")
 
     # End-to-end evaluate on the TFIM contract with synthetic verdicts.
     results = {

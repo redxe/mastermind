@@ -164,9 +164,19 @@ def cmd_verify_seal(_args: argparse.Namespace) -> int:
 
 
 def aggregate_standard_v1(verdicts: list[str], *, artifacts_ok: bool,
-                          escalation_capped: bool) -> str:
-    """Map per-variation verdicts to a final outcome (protocol §5)."""
+                          escalation_unhonored: bool,
+                          strongest_known_required: bool = False) -> str:
+    """Map per-variation verdicts to a final outcome (protocol §5).
+
+    Baseline-escalation consequences are two distinct conditions:
+    - strongest_known_required=True and an unhonored trigger -> Not Auditable
+      (the strongest known baseline is mandatory for auditability).
+    - strongest_known_required=False and an unhonored trigger -> outcome capped
+      at Conditionally Stable (stronger baseline recommended, not mandatory).
+    """
     if not artifacts_ok:
+        return "Not Auditable"
+    if escalation_unhonored and strongest_known_required:
         return "Not Auditable"
     supported = verdicts.count("supported")
     reversed_ = verdicts.count("reversed")
@@ -178,7 +188,7 @@ def aggregate_standard_v1(verdicts: list[str], *, artifacts_ok: bool,
         outcome = "Reversed"
     else:
         outcome = "Not Auditable"
-    if escalation_capped and outcome == "Stable":
+    if escalation_unhonored and outcome == "Stable":
         outcome = "Conditionally Stable"
     return outcome
 
@@ -210,11 +220,14 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
     missing = [a for a in policy["required_artifacts"] if not (REPO / a).exists()]
     artifacts_ok = not (missing and policy["on_missing"] == "not-auditable")
 
-    escalation_capped = bool(results.get("escalation_trigger_fired")
-                             and not results.get("escalation_honored", False))
+    escalation_unhonored = bool(results.get("escalation_trigger_fired")
+                                and not results.get("escalation_honored", False))
+    strongest_required = bool(
+        contract["baseline_policy"]["strongest_known_required"])
 
     outcome = aggregate_standard_v1(verdicts, artifacts_ok=artifacts_ok,
-                                    escalation_capped=escalation_capped)
+                                    escalation_unhonored=escalation_unhonored,
+                                    strongest_known_required=strongest_required)
 
     report = {
         "contract_id": contract["contract_id"],
@@ -222,7 +235,8 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
         "verdicts": {v.get("id", f"variation-{i}"): v["verdict"]
                      for i, v in enumerate(variations)},
         "missing_artifacts": missing,
-        "escalation_capped": escalation_capped,
+        "escalation_unhonored": escalation_unhonored,
+        "strongest_known_required": strongest_required,
     }
     print(json.dumps(report, indent=2))
     return 0 if outcome in OUTCOMES else 1
